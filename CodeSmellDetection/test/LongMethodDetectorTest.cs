@@ -1,16 +1,18 @@
 namespace CodeSmellDetectionTest;
 
-using System.IO;
 using CodeSmellDetection;
+using Microsoft.Extensions.Logging;
+using Moq;
 using Xunit;
 
 public class LongMethodDetectorTest
 {
     [Fact]
-    public void DetectLongMethods_ShouldDetectLongMethod()
+    public void DetectLongMethods_LongMethodDetected_LogsInformation()
     {
         // Arrange
-        var detector = new LongMethodDetector();
+        var loggerMock = new Mock<ILogger<LongMethodDetector>>();
+        var detector = new LongMethodDetector(loggerMock.Object);
         string fileContents = @"
             public class TestClass
             {
@@ -22,62 +24,68 @@ public class LongMethodDetectorTest
                 public void LongMethod()
                 {
                     // long method
-                    line1;
-                    line2;
-                    line3;
-                    line4;
-                    line5;
-                    line6;
-                    line7;
-                    line8;
-                    line9;
-                    line10;
-                    line11;
-                    line12;
-                    line13;
-                    line14;
-                    line15;
-                    line16;
+                    // Line 1
+                    // Line 2
+                    // Line 3
+                    // Line 4
+                    // Line 5
+                    // Line 6
+                    // Line 7
+                    // Line 8
+                    // Line 9
+                    // Line 10
+                    // Line 11
+                    // Line 12
+                    // Line 13
+                    // Line 14
+                    // Line 15
+                    // Line 16
                 }
             }";
 
         // Act
-        using var sw = new StringWriter();
-        Console.SetOut(sw);
         detector.DetectLongMethods(fileContents);
 
         // Assert
-        var result = sw.ToString().Trim();
-        Assert.Contains(
-            "Long Method Detected",
-            result,
-            StringComparison.Ordinal);
+        loggerMock.Verify(
+            x => x.Log(
+                It.Is<LogLevel>(l => l == LogLevel.Information),
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Long Method Detected")),
+                It.IsAny<Exception?>(),
+                It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
+            Times.Once);
     }
 
     [Fact]
-    public void DetectLongMethods_ShouldNotDetectShortMethod()
+    public void DetectLongMethods_NoLongMethodDetected_DoesNotLogInformation()
     {
         // Arrange
-        var detector = new LongMethodDetector();
-        var fileContents = @"
+        var loggerMock = new Mock<ILogger<LongMethodDetector>>();
+        var detector = new LongMethodDetector(loggerMock.Object);
+        string fileContents = @"
             public class TestClass
             {
                 public void ShortMethod()
                 {
-                    // short method
+                     // short method
+                    // Line 1
+                    // Line 2
+                    // Line 3
                 }
             }";
 
         // Act
-        using var sw = new StringWriter();
-        Console.SetOut(sw);
         detector.DetectLongMethods(fileContents);
 
         // Assert
-        var result = sw.ToString().Trim();
-        Assert.DoesNotContain(
-            "Long Method Detected",
-            result,
-            StringComparison.Ordinal);
+        loggerMock.Verify(
+            x => x.Log(
+                It.Is<LogLevel>(l => l == LogLevel.Information),
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Long Method Detected")),
+                It.IsAny<Exception?>(),
+                It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
+            Times.Never);
     }
 }

@@ -1,22 +1,26 @@
 ﻿namespace CodeSmellDetection;
 
-internal class LongMethodDetector
+using Microsoft.Extensions.Logging;
+
+internal class LongMethodDetector(ILogger<LongMethodDetector> logger)
 {
+    private readonly ILogger<LongMethodDetector> logger = logger;
+
     public void DetectLongMethods(string fileContents)
     {
         int methodLineCount = 0;
         bool inMethod = false;
 
-        foreach (var line in fileContents.Split("\n"))
+        foreach (var line in fileContents.Split(Environment.NewLine))
         {
-            if (line.Trim().StartsWith("public") ||
-                line.Trim().StartsWith("private") ||
-                line.Trim().StartsWith("protected") ||
-                line.Trim().StartsWith("internal"))
+            if (line.Trim().StartsWith("public", StringComparison.Ordinal) ||
+                line.Trim().StartsWith("private", StringComparison.Ordinal) ||
+                line.Trim().StartsWith("protected", StringComparison.Ordinal) ||
+                line.Trim().StartsWith("internal", StringComparison.Ordinal))
             {
                 if (inMethod && methodLineCount >= 15)
                 {
-                    Console.WriteLine("Long Method Detected");
+                    this.logger.LogInformation("Long Method Detected");
                 }
 
                 inMethod = true;
@@ -32,7 +36,7 @@ internal class LongMethodDetector
             {
                 if (inMethod && methodLineCount >= 15)
                 {
-                    Console.WriteLine("Long Method Detected");
+                    this.logger.LogInformation("Long Method Detected");
                 }
 
                 inMethod = false;
