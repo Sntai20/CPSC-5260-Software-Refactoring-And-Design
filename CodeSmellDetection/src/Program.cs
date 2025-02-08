@@ -5,6 +5,6 @@ string filePath = "path/to/your/source/file.cs";
 var longMethodDetector = new LongMethodDetector();
 var longParameterListDetector = new LongParameterListDetector();
 
-string[]? fileContents = File.ReadAllLines(filePath);
+string? fileContents = File.ReadAllText(filePath);
 longMethodDetector.DetectLongMethods(fileContents);
-longParameterListDetector.DetectLongParameterLists(filePath);
+longParameterListDetector.DetectLongParameterLists(fileContents);

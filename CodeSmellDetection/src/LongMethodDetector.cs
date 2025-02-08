@@ -2,12 +2,12 @@
 
 internal class LongMethodDetector
 {
-    public void DetectLongMethods(string[]? lines)
+    public void DetectLongMethods(string fileContents)
     {
         int methodLineCount = 0;
         bool inMethod = false;
 
-        foreach (var line in lines)
+        foreach (var line in fileContents.Split("\n"))
         {
             if (line.Trim().StartsWith("public") ||
                 line.Trim().StartsWith("private") ||

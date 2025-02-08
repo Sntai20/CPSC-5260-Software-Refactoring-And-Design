@@ -11,7 +11,7 @@ public class LongMethodDetectorTest
     {
         // Arrange
         var detector = new LongMethodDetector();
-        string testFileContent = @"
+        string fileContents = @"
             public class TestClass
             {
                 public void ShortMethod()
@@ -44,7 +44,7 @@ public class LongMethodDetectorTest
         // Act
         using var sw = new StringWriter();
         Console.SetOut(sw);
-        detector.DetectLongMethods(testFileContent.Split('\n'));
+        detector.DetectLongMethods(fileContents);
 
         // Assert
         var result = sw.ToString().Trim();
@@ -59,7 +59,7 @@ public class LongMethodDetectorTest
     {
         // Arrange
         var detector = new LongMethodDetector();
-        var testFileContent = @"
+        var fileContents = @"
             public class TestClass
             {
                 public void ShortMethod()
@@ -71,7 +71,7 @@ public class LongMethodDetectorTest
         // Act
         using var sw = new StringWriter();
         Console.SetOut(sw);
-        detector.DetectLongMethods(testFileContent.Split('\n'));
+        detector.DetectLongMethods(fileContents);
 
         // Assert
         var result = sw.ToString().Trim();

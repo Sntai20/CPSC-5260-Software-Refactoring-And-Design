@@ -1,19 +1,18 @@
 ﻿namespace CodeSmellDetection;
 
+using System;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System;
-using System.Linq;
 
-public class LongParameterListDetector
+internal class LongParameterListDetector
 {
     private const int ParameterThreshold = 3;
 
-    public void DetectLongParameterLists(string filePath)
+    public void DetectLongParameterLists(string fileContents)
     {
-        var code = System.IO.File.ReadAllText(filePath);
-        var tree = CSharpSyntaxTree.ParseText(code);
+        var tree = CSharpSyntaxTree.ParseText(fileContents);
         var root = tree.GetRoot();
 
         var methodsWithLongParameterLists = root.DescendantNodes()
