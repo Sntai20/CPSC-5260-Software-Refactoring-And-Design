@@ -1,12 +1,38 @@
 ﻿using CodeSmellDetection;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
-string filePath = "path/to/your/source/file.cs";
+var host = Host.CreateDefaultBuilder(args)
+    .ConfigureAppConfiguration((context, config) =>
+    {
+        _ = config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+    })
+    .ConfigureServices((context, services) =>
+    {
+        _ = services.AddSingleton<LongMethodDetector>();
+        _ = services.AddSingleton<LongParameterListDetector>();
+        _ = services.AddSingleton<DuplicatedCodeDetector>();
+    })
+    .Build();
 
-var longMethodDetector = new LongMethodDetector();
-var longParameterListDetector = new LongParameterListDetector();
-var duplicatedCodeDetector = new DuplicatedCodeDetector();
+var configuration = host.Services.GetRequiredService<IConfiguration>();
+var longMethodDetector = host.Services.GetRequiredService<LongMethodDetector>();
+var longParameterListDetector = host.Services.GetRequiredService<LongParameterListDetector>();
+var duplicatedCodeDetector = host.Services.GetRequiredService<DuplicatedCodeDetector>();
 
-string? fileContents = File.ReadAllText(filePath);
-longMethodDetector.DetectLongMethods(fileContents);
-longParameterListDetector.DetectLongParameterLists(fileContents);
-duplicatedCodeDetector.DetectDuplicatedCode(fileContents);
+try
+{
+    string? pathToCodeFile = configuration["PathToCodeFile"] ?? throw new InvalidOperationException("Path to code file not found in configuration.");
+    string fileContents = File.ReadAllText(pathToCodeFile);
+
+    longMethodDetector.DetectLongMethods(fileContents);
+    longParameterListDetector.DetectLongParameterLists(fileContents);
+    duplicatedCodeDetector.DetectDuplicatedCode(fileContents);
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"An error occurred: {ex.Message}");
+}
+
+host.Run();
