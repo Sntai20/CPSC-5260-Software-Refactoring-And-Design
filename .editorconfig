@@ -1,0 +1,262 @@
+﻿# top-most EditorConfig file
+root = true
+
+[*.cs]
+
+# Disable all diagnostics by default. Will be set to warning on all projects once all diagnostics are resolved.
+dotnet_diagnostic.*.severity = none
+
+# Organize usings
+dotnet_sort_system_directives_first = true:warning
+
+#### CSharp rules ####
+
+csharp_indent_labels = one_less_than_current
+csharp_space_around_binary_operators = before_and_after
+csharp_using_directive_placement = inside_namespace:none
+csharp_prefer_simple_using_statement = true:warning
+csharp_prefer_braces = true:warning
+csharp_style_namespace_declarations = file_scoped:warning
+csharp_style_prefer_method_group_conversion = true:none
+csharp_style_expression_bodied_methods = false:none
+csharp_style_expression_bodied_constructors = false:none
+csharp_style_expression_bodied_operators = false:none
+csharp_style_expression_bodied_properties = true:none
+csharp_style_expression_bodied_indexers = true:none
+csharp_style_expression_bodied_accessors = true:none
+csharp_style_expression_bodied_lambdas = true:none
+csharp_style_expression_bodied_local_functions = false:none
+csharp_style_throw_expression = true:warning
+csharp_style_prefer_tuple_swap = true:warning
+csharp_style_implicit_object_creation_when_type_is_apparent = true:warning
+csharp_style_prefer_range_operator = true:warning
+csharp_style_prefer_index_operator = true:warning
+csharp_style_prefer_local_over_anonymous_function = true:warning
+csharp_prefer_simple_default_expression = true:warning
+csharp_style_prefer_null_check_over_type_check = true:warning
+csharp_style_inlined_variable_declaration = true:none # Not always easier to read (variables declared mid-line, variables declared outside the scope they are used).
+csharp_style_deconstructed_variable_declaration = true:warning
+csharp_style_unused_value_expression_statement_preference = discard_variable:warning
+csharp_style_unused_value_assignment_preference = discard_variable:warning
+csharp_prefer_static_local_function = true:warning
+csharp_style_conditional_delegate_call = true:warning
+csharp_style_prefer_parameter_null_checking = true:warning
+csharp_style_prefer_switch_expression = true:warning
+csharp_style_prefer_pattern_matching = true:none
+csharp_style_pattern_matching_over_is_with_cast_check = true:warning
+csharp_style_pattern_matching_over_as_with_null_check = true:warning
+csharp_style_prefer_not_pattern = true:warning
+csharp_style_prefer_extended_property_pattern = true:warning
+csharp_style_var_for_built_in_types = false:none
+csharp_style_var_when_type_is_apparent = false:none
+csharp_style_var_elsewhere = false:none
+
+tab_width = 4
+indent_size = 4
+end_of_line = crlf
+
+#### Style rules ####
+
+dotnet_code_quality_unused_parameters = all:warning
+dotnet_style_coalesce_expression = true:warning
+dotnet_style_collection_initializer = true:warning
+dotnet_style_explicit_tuple_names = true:warning
+dotnet_style_namespace_match_folder = true:warning
+dotnet_style_null_propagation = true:warning
+dotnet_style_object_initializer = true:warning
+dotnet_style_operator_placement_when_wrapping = beginning_of_line
+dotnet_style_parentheses_in_arithmetic_binary_operators = always_for_clarity:none # Sometimes suggests removing parentheses. Allow authors to be explicit.
+dotnet_style_parentheses_in_other_binary_operators = always_for_clarity:none # Sometimes suggests removing parentheses. Allow authors to be explicit.
+dotnet_style_parentheses_in_other_operators = always_for_clarity:none # Sometimes suggests removing parentheses. Allow authors to be explicit.
+dotnet_style_parentheses_in_relational_binary_operators = always_for_clarity:none # Sometimes suggests removing parentheses. Allow authors to be explicit.
+dotnet_style_predefined_type_for_locals_parameters_members = true:warning
+dotnet_style_predefined_type_for_member_access = true:warning
+dotnet_style_prefer_auto_properties = true:warning
+dotnet_style_prefer_compound_assignment = true:warning
+dotnet_style_prefer_conditional_expression_over_assignment = false:none # Sometimes produces highly complex statements for complicated if statements or throwing exceptions in ternary statements.
+dotnet_style_prefer_conditional_expression_over_return = true:none # Sometimes produces highly complex statements for complicated if statements or throwing exceptions in ternary statements.
+dotnet_style_prefer_inferred_anonymous_type_member_names = true:none # Allow authors to be explicit.
+dotnet_style_prefer_inferred_tuple_names = true:none # Allow authors to be explicit.
+dotnet_style_prefer_is_null_check_over_reference_equality_method = true:warning
+csharp_style_prefer_primary_constructors = true:suggestion
+dotnet_style_prefer_simplified_boolean_expressions = true:warning
+dotnet_style_prefer_simplified_interpolation = true:warning
+csharp_style_prefer_top_level_statements = true:warning
+dotnet_style_qualification_for_event = true:warning
+dotnet_style_qualification_for_field = true:warning
+dotnet_style_qualification_for_method = true:warning
+dotnet_style_qualification_for_property = true:warning
+dotnet_style_readonly_field = true:warning
+dotnet_style_require_accessibility_modifiers = for_non_interface_members:warning
+
+#### Naming styles ####
+
+# Naming rules
+
+dotnet_naming_rule.interface_should_be_begins_with_i.severity = warning
+dotnet_naming_rule.interface_should_be_begins_with_i.symbols = interface
+dotnet_naming_rule.interface_should_be_begins_with_i.style = begins_with_i
+
+dotnet_naming_rule.types_should_be_pascal_case.severity = warning
+dotnet_naming_rule.types_should_be_pascal_case.symbols = types
+dotnet_naming_rule.types_should_be_pascal_case.style = pascal_case
+
+dotnet_naming_rule.non_field_members_should_be_pascal_case.severity = warning
+dotnet_naming_rule.non_field_members_should_be_pascal_case.symbols = non_field_members
+dotnet_naming_rule.non_field_members_should_be_pascal_case.style = pascal_case
+
+# Symbol specifications
+
+dotnet_naming_symbols.interface.applicable_kinds = interface
+dotnet_naming_symbols.interface.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
+dotnet_naming_symbols.interface.required_modifiers =
+
+dotnet_naming_symbols.types.applicable_kinds = class, struct, interface, enum
+dotnet_naming_symbols.types.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
+dotnet_naming_symbols.types.required_modifiers =
+
+dotnet_naming_symbols.non_field_members.applicable_kinds = property, event, method
+dotnet_naming_symbols.non_field_members.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
+dotnet_naming_symbols.non_field_members.required_modifiers = 
+
+# Naming styles
+
+dotnet_naming_style.begins_with_i.required_prefix = I
+dotnet_naming_style.begins_with_i.required_suffix =
+dotnet_naming_style.begins_with_i.word_separator =
+dotnet_naming_style.begins_with_i.capitalization = pascal_case
+
+dotnet_naming_style.pascal_case.required_prefix =
+dotnet_naming_style.pascal_case.required_suffix =
+dotnet_naming_style.pascal_case.word_separator =
+dotnet_naming_style.pascal_case.capitalization = pascal_case
+
+#### Rule suppressions ####
+
+# CA1031: Do not catch general exception types
+# The practice of catching general exception types is widespread, rarely dangerous, and often leads to more bugs than it solves.
+dotnet_diagnostic.CA1031.severity = suggestion
+
+# CA1727: Use PascalCase for named placeholders
+# This will be a sizable effort which is difficult considering logging that preexisted ILogger.
+dotnet_diagnostic.CA1727.severity = none
+
+# CA1805: Do not initialize unnecessarily
+# Explicitly setting a value for readability is valued.
+dotnet_diagnostic.CA1805.severity = none
+
+# CA1812: Avoid uninstantiated internal classes
+# We have internal classes that are used by dependency injection.
+dotnet_diagnostic.CA1812.severity = none
+
+# CA1848: Use the LoggerMessage delegates
+# This will be a sizable effort which is difficult considering logging that preexisted ILogger.
+dotnet_diagnostic.CA1848.severity = none
+
+# CA2007: Consider calling ConfigureAwait on the awaited task
+# Not applicable to our use-case.
+dotnet_diagnostic.CA2007.severity = none
+
+# CA2254: Template should be a static expression
+# This will be a sizable effort which is difficult considering logging that preexisted ILogger.
+dotnet_diagnostic.CA2254.severity = none
+
+# IDE0230: Use UTF-8 string literal
+# Sometimes misinterprets byte value to be UTF-8 characters when they are not intended as such.
+dotnet_diagnostic.IDE0230.severity = suggestion
+
+# CS8600: Converting null literal or possible null value to non-nullable type.
+# Need to work through this error. Suppressing for now.
+dotnet_diagnostic.CS8600.severity = none
+
+# CS8602: Dereference of a possibly null reference.
+# Need to work through this error. Suppressing for now.
+dotnet_diagnostic.CS8602.severity = none
+
+# CS8603: Possible null reference return.
+# Need to work through this error. Suppressing for now.
+dotnet_diagnostic.CS8603.severity = none
+
+# SA1615: Element return value should be documented
+# ConstFieldDocumentationHeader: The field must have a documentation header.
+dotnet_diagnostic.ConstFieldDocumentationHeader.severity = none
+
+# SA1010: Opening square brackets should be spaced correctly
+dotnet_diagnostic.SA1010.severity = none
+
+# SA1600: Elements should be documented
+dotnet_diagnostic.SA1600.severity = none
+
+# SA1633: File should have header
+dotnet_diagnostic.SA1633.severity = none
+
+[{Program,GlobalUsings}.cs]
+
+# SA1200: Using directives should be placed correctly.
+# These files do not have a "Using Namespace" statement, resulting in a SA1200 false positive.
+dotnet_diagnostic.SA1200.severity = none
+
+[*.g.cs]
+
+# CS1591: Missing XML comment for publicly visible type or member
+# This is not a concern we apply to generated code.
+dotnet_diagnostic.CS1591.severity = none
+
+[*{Test,TestData,TestFixture}.cs]
+
+# ClassDocumentationHeader: The class must have a documentation header.
+dotnet_diagnostic.ClassDocumentationHeader.severity = none
+
+# MethodDocumentationHeader: The method must have a documentation header.
+dotnet_diagnostic.MethodDocumentationHeader.severity = none
+
+# ConstructorDocumentationHeader: The constructor must have a documentation header.
+dotnet_diagnostic.ConstructorDocumentationHeader.severity = none
+
+# CA1001: Types that own disposable fields should be disposable
+# The SetUp/TearDown unit test model is an alternative to using constructors/IDisposable.
+dotnet_diagnostic.CA1001.severity = none
+
+# CA1305: Specify IFormatProvider
+# Okay for test code.
+dotnet_diagnostic.CA1305.severity = suggestion
+
+# CA1308: Normalize strings to uppercase
+# This is not a concern we apply to unit tests. We sometimes want to test with uppercase inputs.
+dotnet_diagnostic.CA1308.severity = none
+
+# CA1707: Identifiers should not contain underscores
+# This is not a concern we apply to unit tests. Can be helpful in test naming.
+dotnet_diagnostic.CA1707.severity = none
+
+# CA1848: Use the LoggerMessage delegates
+# Not a performance concern for tests.
+dotnet_diagnostic.CA1848.severity = none
+
+# CA2254: Template should be a static expression
+# This is not a concern we apply to unit tests.
+dotnet_diagnostic.CA2254.severity = none
+
+# CA5394: Do not use insecure randomness
+# Not a concern for test content.
+dotnet_diagnostic.CA5394.severity = none
+
+# CS1591: Missing XML comment for publicly visible type or member
+# This is not a concern we apply to unit tests.
+dotnet_diagnostic.CS1591.severity = none
+
+# CS8618: Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+# The SetUp/TearDown unit test model makes this difficult to comply with. It's an acceptable risk for non-Production code.
+dotnet_diagnostic.CS8618.severity = none
+
+# SA1600: Elements should be documented
+# This is not a concern we apply to unit tests.
+dotnet_diagnostic.SA1600.severity = none
+
+# SA1611: Element parameters should be documented
+# This is not a concern we apply to unit tests.
+dotnet_diagnostic.SA1611.severity = none
+
+# Project files
+[*.{proj,csproj,sfproj}]
+indent_size = 2

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(MSBuildProjectExtension)' == '.csproj'">
+    <TargetFramework>net9.0</TargetFramework>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <Platforms>x64</Platforms>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <AnalysisMode>All</AnalysisMode>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <CodeAnalysisTreatWarningsAsErrors  Condition="'$(Configuration)' != 'Debug'">true</CodeAnalysisTreatWarningsAsErrors>
+    <TreatWarningsAsErrors Condition="'$(Configuration)' != 'Debug'">true</TreatWarningsAsErrors>
+    <EnforceCodeStyleInBuild Condition="'$(Configuration)' != 'Debug'">true</EnforceCodeStyleInBuild>
+    <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
+    <RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
+    <WarningsAsErrors />
+    <WarningLevel>4</WarningLevel>
+    <OutputPath>$(MSBuildThisFileDirectory)\out\$(MSBuildProjectName)\</OutputPath>
+    <PackageRoot>$(MSBuildThisFileDirectory)\out\Packages</PackageRoot>
+    <PublishRoot>$(MSBuildThisFileDirectory)\out\Publish</PublishRoot>
+    <PackageLocation>$(PackageRoot)\$(MSBuildProjectName)</PackageLocation>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == '*Test'">
+      <RunSettingsFilePath>$(MSBuildThisFileDirectory)\CompleteRunsettings.runsettings</RunSettingsFilePath>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(MSBuildProjectExtension)' == '.csproj'">
+    <PackageReference Include="StyleCop.Analyzers">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <!-- Prevent from showing up in every project. -->
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)\stylecop.json" Link="stylecop.json">
+      <Visible>false</Visible>
+    </AdditionalFiles>
+    <!-- At present, being CLSCompliant is not a requirement and provides us no upside, while restricting some code use. -->
+    <AssemblyAttribute Include="CLSCompliant">  
+      <_Parameter1>false</_Parameter1>  
+      <_Parameter1_IsLiteral>true</_Parameter1_IsLiteral>
+    </AssemblyAttribute>
+  </ItemGroup>
+</Project>
