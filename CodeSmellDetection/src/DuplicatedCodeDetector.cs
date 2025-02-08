@@ -2,17 +2,19 @@ namespace CodeSmellDetection;
 
 using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 
-internal class DuplicatedCodeDetector
+internal class DuplicatedCodeDetector(ILogger<DuplicatedCodeDetector> logger)
 {
     private const double JaccardThreshold = 0.75;
     private static readonly char[] Separator = [' ', '\t', '(', ')', '{', '}', ';', ','];
+    private readonly ILogger<DuplicatedCodeDetector> logger = logger;
 
     public void DetectDuplicatedCode(string fileContents)
     {
         var lineSets = new List<HashSet<string>>();
 
-        foreach (var line in fileContents.Split("\n"))
+        foreach (var line in fileContents.Split(Environment.NewLine))
         {
             var words = line.Split(
                 Separator,
@@ -34,7 +36,7 @@ internal class DuplicatedCodeDetector
 
                 if (jaccardSimilarity >= JaccardThreshold)
                 {
-                    Console.WriteLine($"Duplicated code detected between lines {i + 1} and {j + 1} with Jaccard similarity {jaccardSimilarity}");
+                    this.logger.LogInformation($"Duplicated code detected between lines {i + 1} and {j + 1} with Jaccard similarity {jaccardSimilarity}");
                 }
             }
         }

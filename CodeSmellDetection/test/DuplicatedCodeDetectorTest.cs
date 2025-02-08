@@ -1,8 +1,9 @@
 namespace CodeSmellDetectionTest;
 
 using System;
-using System.IO;
 using CodeSmellDetection;
+using Microsoft.Extensions.Logging;
+using Moq;
 using Xunit;
 
 public class DuplicatedCodeDetectorTest
@@ -11,7 +12,8 @@ public class DuplicatedCodeDetectorTest
     public void DetectDuplicatedCode_ShouldDetectDuplicatedLines()
     {
         // Arrange
-        var detector = new DuplicatedCodeDetector();
+        var loggerMock = new Mock<ILogger<DuplicatedCodeDetector>>();
+        var detector = new DuplicatedCodeDetector(loggerMock.Object);
         var fileContents = @"
                 int a = 1;
                 int b = 2;
@@ -20,23 +22,25 @@ public class DuplicatedCodeDetectorTest
             ";
 
         // Act
-        using var sw = new StringWriter();
-        Console.SetOut(sw);
         detector.DetectDuplicatedCode(fileContents);
-        var result = sw.ToString();
 
         // Assert
-        Assert.Contains(
-            "Duplicated code detected between lines 2 and 4",
-            result,
-            StringComparison.Ordinal);
+        loggerMock.Verify(
+            x => x.Log(
+                It.Is<LogLevel>(l => l == LogLevel.Information),
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Duplicated code detected between lines 2 and 4")),
+                It.IsAny<Exception?>(),
+                It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
+            Times.Once);
     }
 
     [Fact]
     public void DetectDuplicatedCode_ShouldNotDetectDuplicatedLines()
     {
         // Arrange
-        var detector = new DuplicatedCodeDetector();
+        var loggerMock = new Mock<ILogger<DuplicatedCodeDetector>>();
+        var detector = new DuplicatedCodeDetector(loggerMock.Object);
         var fileContents = @"
                 int a = 1;
                 int b = 2;
@@ -45,15 +49,16 @@ public class DuplicatedCodeDetectorTest
             ";
 
         // Act
-        using var sw = new StringWriter();
-        Console.SetOut(sw);
         detector.DetectDuplicatedCode(fileContents);
-        var result = sw.ToString();
 
         // Assert
-        Assert.DoesNotContain(
-            "Duplicated code detected",
-            result,
-            StringComparison.Ordinal);
+        loggerMock.Verify(
+            x => x.Log(
+                It.Is<LogLevel>(l => l == LogLevel.Information),
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Duplicated code detected")),
+                It.IsAny<Exception?>(),
+                It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
+            Times.Never);
     }
 }
