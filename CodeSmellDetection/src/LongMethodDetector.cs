@@ -1,10 +1,9 @@
 ﻿namespace CodeSmellDetection;
 
-public class LongMethodDetector
+internal class LongMethodDetector
 {
-    public void DetectLongMethods(string filePath)
+    public void DetectLongMethods(string[]? lines)
     {
-        var lines = File.ReadAllLines(filePath);
         int methodLineCount = 0;
         bool inMethod = false;
 
@@ -19,6 +18,7 @@ public class LongMethodDetector
                 {
                     Console.WriteLine("Long Method Detected");
                 }
+
                 inMethod = true;
                 methodLineCount = 0;
             }
@@ -34,6 +34,7 @@ public class LongMethodDetector
                 {
                     Console.WriteLine("Long Method Detected");
                 }
+
                 inMethod = false;
             }
         }

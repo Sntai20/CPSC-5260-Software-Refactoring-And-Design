@@ -11,8 +11,7 @@ public class LongMethodDetectorTest
     {
         // Arrange
         var detector = new LongMethodDetector();
-        var testFilePath = "testFile.cs";
-        var testFileContent = @"
+        string testFileContent = @"
             public class TestClass
             {
                 public void ShortMethod()
@@ -41,21 +40,18 @@ public class LongMethodDetectorTest
                     line16;
                 }
             }";
-        File.WriteAllText(testFilePath, testFileContent);
 
         // Act
-        using (var sw = new StringWriter())
-        {
-            Console.SetOut(sw);
-            detector.DetectLongMethods(testFilePath);
+        using var sw = new StringWriter();
+        Console.SetOut(sw);
+        detector.DetectLongMethods(testFileContent.Split('\n'));
 
-            // Assert
-            var result = sw.ToString().Trim();
-            Assert.Contains("Long Method Detected", result);
-        }
-
-        // Cleanup
-        File.Delete(testFilePath);
+        // Assert
+        var result = sw.ToString().Trim();
+        Assert.Contains(
+            "Long Method Detected",
+            result,
+            StringComparison.Ordinal);
     }
 
     [Fact]
@@ -63,7 +59,6 @@ public class LongMethodDetectorTest
     {
         // Arrange
         var detector = new LongMethodDetector();
-        var testFilePath = "testFile.cs";
         var testFileContent = @"
             public class TestClass
             {
@@ -72,20 +67,17 @@ public class LongMethodDetectorTest
                     // short method
                 }
             }";
-        File.WriteAllText(testFilePath, testFileContent);
 
         // Act
-        using (var sw = new StringWriter())
-        {
-            Console.SetOut(sw);
-            detector.DetectLongMethods(testFilePath);
+        using var sw = new StringWriter();
+        Console.SetOut(sw);
+        detector.DetectLongMethods(testFileContent.Split('\n'));
 
-            // Assert
-            var result = sw.ToString().Trim();
-            Assert.DoesNotContain("Long Method Detected", result);
-        }
-
-        // Cleanup
-        File.Delete(testFilePath);
+        // Assert
+        var result = sw.ToString().Trim();
+        Assert.DoesNotContain(
+            "Long Method Detected",
+            result,
+            StringComparison.Ordinal);
     }
 }
