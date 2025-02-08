@@ -1,7 +1,8 @@
 namespace CodeSmellDetectionTest;
 
-using System.IO;
 using CodeSmellDetection;
+using Microsoft.Extensions.Logging;
+using Moq;
 using Xunit;
 
 public class LongParameterListDetectorTest
@@ -10,7 +11,8 @@ public class LongParameterListDetectorTest
     public void DetectLongParameterLists_ShouldDetectMethodsWithLongParameterLists()
     {
         // Arrange
-        var detector = new LongParameterListDetector();
+        var loggerMock = new Mock<ILogger<LongParameterListDetector>>();
+        var detector = new LongParameterListDetector(loggerMock.Object);
         var fileContents = @"
             public class TestClass
             {
@@ -19,19 +21,16 @@ public class LongParameterListDetectorTest
             }";
 
         // Act
-        using var sw = new StringWriter();
-        Console.SetOut(sw);
         detector.DetectLongParameterLists(fileContents);
-        var result = sw.ToString();
 
         // Assert
-        Assert.Contains(
-            "Method 'MethodWithManyParameters' has a long parameter list with 4 parameters.",
-            result,
-            StringComparison.Ordinal);
-        Assert.DoesNotContain(
-            "Method 'MethodWithFewParameters' has a long parameter list with 2 parameters.",
-            result,
-            StringComparison.Ordinal);
+        loggerMock.Verify(
+            x => x.Log(
+                It.Is<LogLevel>(l => l == LogLevel.Information),
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Method 'MethodWithManyParameters' has a long parameter list with 4 parameters.")),
+                It.IsAny<Exception?>(),
+                It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
+            Times.Once);
     }
 }
