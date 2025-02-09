@@ -8,6 +8,10 @@ var host = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration((context, config) =>
     {
         _ = config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+        _ = config.AddJsonFile(
+            $"appsettings.{context.HostingEnvironment.EnvironmentName}.json",
+            optional: true,
+            reloadOnChange: true);
     })
     .ConfigureServices((context, services) =>
     {
