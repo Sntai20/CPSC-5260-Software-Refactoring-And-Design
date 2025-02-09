@@ -7,9 +7,6 @@ internal class CodeSmellTestData
     int a = 1;
     int c = 3;
 
-    public void MethodWithFewParameters(int a, int b) { }
-    public void MethodWithManyParameters(int a, int b, int c, int d) { }
-
     public void ShortMethod()
     {
         // short method
@@ -35,4 +32,7 @@ internal class CodeSmellTestData
         // Line 15
         // Line 16
     }
+
+    public void MethodWithFewParameters(int a, int b) { }
+    public void MethodWithManyParameters(int a, int b, int c, int d) { }
 }
