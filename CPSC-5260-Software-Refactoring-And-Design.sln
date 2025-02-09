@@ -1,5 +1,4 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35731.43
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -13,14 +12,14 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{FBF382B7-C69A-44C4-B976-8BEDC5080963}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{FBF382B7-C69A-44C4-B976-8BEDC5080963}.Debug|x64.Build.0 = Debug|Any CPU
-		{FBF382B7-C69A-44C4-B976-8BEDC5080963}.Release|x64.ActiveCfg = Release|Any CPU
-		{FBF382B7-C69A-44C4-B976-8BEDC5080963}.Release|x64.Build.0 = Release|Any CPU
-		{4CF1F0EB-4813-4330-A1BA-083A40C3C1B4}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{4CF1F0EB-4813-4330-A1BA-083A40C3C1B4}.Debug|x64.Build.0 = Debug|Any CPU
-		{4CF1F0EB-4813-4330-A1BA-083A40C3C1B4}.Release|x64.ActiveCfg = Release|Any CPU
-		{4CF1F0EB-4813-4330-A1BA-083A40C3C1B4}.Release|x64.Build.0 = Release|Any CPU
+		{FBF382B7-C69A-44C4-B976-8BEDC5080963}.Debug|x64.ActiveCfg = Debug|x64
+		{FBF382B7-C69A-44C4-B976-8BEDC5080963}.Debug|x64.Build.0 = Debug|x64
+		{FBF382B7-C69A-44C4-B976-8BEDC5080963}.Release|x64.ActiveCfg = Release|x64
+		{FBF382B7-C69A-44C4-B976-8BEDC5080963}.Release|x64.Build.0 = Release|x64
+		{4CF1F0EB-4813-4330-A1BA-083A40C3C1B4}.Debug|x64.ActiveCfg = Debug|x64
+		{4CF1F0EB-4813-4330-A1BA-083A40C3C1B4}.Debug|x64.Build.0 = Debug|x64
+		{4CF1F0EB-4813-4330-A1BA-083A40C3C1B4}.Release|x64.ActiveCfg = Release|x64
+		{4CF1F0EB-4813-4330-A1BA-083A40C3C1B4}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
