@@ -19,6 +19,9 @@ public class LongParameterListDetectorTest
             longParameterListDetectorOptions.Object,
             loggerMock.Object);
 
+        _ = longParameterListDetectorOptions.Setup(x => x.Value)
+                       .Returns(new LongParameterListDetectorOptions { ParameterThreshold = 3 });
+
         var fileContents = @"
             public class TestClass
             {
