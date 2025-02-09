@@ -2,7 +2,9 @@ namespace CodeSmellDetectionTest;
 
 using System;
 using CodeSmellDetection;
+using CodeSmellDetection.Options;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 
@@ -12,8 +14,15 @@ public class DuplicatedCodeDetectorTest
     public void DetectDuplicatedCode_ShouldDetectDuplicatedLines()
     {
         // Arrange
+        var optionsMock = new Mock<IOptions<DuplicatedCodeDetectorOptions>>();
         var loggerMock = new Mock<ILogger<DuplicatedCodeDetector>>();
-        var detector = new DuplicatedCodeDetector(loggerMock.Object);
+        var detector = new DuplicatedCodeDetector(
+            optionsMock.Object,
+            loggerMock.Object);
+
+        _ = optionsMock.Setup(x => x.Value)
+                       .Returns(new DuplicatedCodeDetectorOptions { JaccardThreshold = 0.75 });
+
         var fileContents = @"
                 int a = 1;
                 int b = 2;
@@ -39,8 +48,15 @@ public class DuplicatedCodeDetectorTest
     public void DetectDuplicatedCode_ShouldNotDetectDuplicatedLines()
     {
         // Arrange
+        var optionsMock = new Mock<IOptions<DuplicatedCodeDetectorOptions>>();
         var loggerMock = new Mock<ILogger<DuplicatedCodeDetector>>();
-        var detector = new DuplicatedCodeDetector(loggerMock.Object);
+        var detector = new DuplicatedCodeDetector(
+            optionsMock.Object,
+            loggerMock.Object);
+
+        _ = optionsMock.Setup(x => x.Value)
+                       .Returns(new DuplicatedCodeDetectorOptions { JaccardThreshold = 0.75 });
+
         var fileContents = @"
                 int a = 1;
                 int b = 2;
