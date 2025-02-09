@@ -2,10 +2,17 @@
 
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+/// Detects long methods in the provided file contents.
+/// </summary>
 internal class LongMethodDetector(ILogger<LongMethodDetector> logger)
 {
     private readonly ILogger<LongMethodDetector> logger = logger;
 
+    /// <summary>
+    /// Detects methods in the provided file contents that exceed a certain line count.
+    /// </summary>
+    /// <param name="fileContents">The contents of the file to analyze.</param>
     public void DetectLongMethods(string fileContents)
     {
         int methodLineCount = 0;
