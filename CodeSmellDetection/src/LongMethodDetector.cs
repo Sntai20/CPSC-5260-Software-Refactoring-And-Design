@@ -1,12 +1,17 @@
 ﻿namespace CodeSmellDetection;
 
+using CodeSmellDetection.Options;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 /// <summary>
 /// Detects long methods in the provided file contents.
 /// </summary>
-internal class LongMethodDetector(ILogger<LongMethodDetector> logger)
+internal class LongMethodDetector(
+    IOptions<LongMethodDetectorOptions> options,
+    ILogger<LongMethodDetector> logger)
 {
+    private readonly IOptions<LongMethodDetectorOptions> options = options;
     private readonly ILogger<LongMethodDetector> logger = logger;
 
     /// <summary>
@@ -17,6 +22,7 @@ internal class LongMethodDetector(ILogger<LongMethodDetector> logger)
     {
         int methodLineCount = 0;
         bool inMethod = false;
+        var methodLineCountThreshold = this.options.Value.MethodLineCountThreshold;
 
         foreach (var line in fileContents.Split(Environment.NewLine))
         {
@@ -25,7 +31,7 @@ internal class LongMethodDetector(ILogger<LongMethodDetector> logger)
                 line.Trim().StartsWith("protected", StringComparison.Ordinal) ||
                 line.Trim().StartsWith("internal", StringComparison.Ordinal))
             {
-                if (inMethod && methodLineCount >= 15)
+                if (inMethod && methodLineCount >= methodLineCountThreshold)
                 {
                     this.logger.LogInformation("Long Method Detected");
                 }
@@ -41,7 +47,7 @@ internal class LongMethodDetector(ILogger<LongMethodDetector> logger)
 
             if (line.Trim() == "}")
             {
-                if (inMethod && methodLineCount >= 15)
+                if (inMethod && methodLineCount >= methodLineCountThreshold)
                 {
                     this.logger.LogInformation("Long Method Detected");
                 }

@@ -1,4 +1,5 @@
 ﻿using CodeSmellDetection;
+using CodeSmellDetection.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -10,6 +11,8 @@ var host = Host.CreateDefaultBuilder(args)
     })
     .ConfigureServices((context, services) =>
     {
+        _ = services.AddOptions<LongMethodDetectorOptions>()
+                    .Bind(context.Configuration.GetSection("LongMethodDetectorOptions"));
         _ = services.AddSingleton<LongMethodDetector>();
         _ = services.AddSingleton<LongParameterListDetector>();
         _ = services.AddSingleton<DuplicatedCodeDetector>();
