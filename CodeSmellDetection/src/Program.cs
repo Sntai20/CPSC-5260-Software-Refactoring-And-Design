@@ -13,6 +13,8 @@ var host = Host.CreateDefaultBuilder(args)
     {
         _ = services.AddOptions<LongMethodDetectorOptions>()
                     .Bind(context.Configuration.GetSection("LongMethodDetectorOptions"));
+        _ = services.AddOptions<LongParameterListDetectorOptions>()
+                    .Bind(context.Configuration.GetSection("LongParameterListDetectorOptions"));
         _ = services.AddSingleton<LongMethodDetector>();
         _ = services.AddSingleton<LongParameterListDetector>();
         _ = services.AddSingleton<DuplicatedCodeDetector>();

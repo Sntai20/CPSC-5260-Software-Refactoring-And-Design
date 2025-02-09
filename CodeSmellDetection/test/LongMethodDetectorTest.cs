@@ -1,7 +1,9 @@
 namespace CodeSmellDetectionTest;
 
 using CodeSmellDetection;
+using CodeSmellDetection.Options;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 
@@ -11,8 +13,15 @@ public class LongMethodDetectorTest
     public void DetectLongMethods_LongMethodDetected_LogsInformation()
     {
         // Arrange
+        var optionsMock = new Mock<IOptions<LongMethodDetectorOptions>>();
         var loggerMock = new Mock<ILogger<LongMethodDetector>>();
-        var detector = new LongMethodDetector(loggerMock.Object);
+        var detector = new LongMethodDetector(
+            optionsMock.Object,
+            loggerMock.Object);
+
+        _ = optionsMock.Setup(x => x.Value)
+                       .Returns(new LongMethodDetectorOptions { MethodLineCountThreshold = 15 });
+
         string fileContents = @"
             public class TestClass
             {
@@ -61,8 +70,15 @@ public class LongMethodDetectorTest
     public void DetectLongMethods_NoLongMethodDetected_DoesNotLogInformation()
     {
         // Arrange
+        var optionsMock = new Mock<IOptions<LongMethodDetectorOptions>>();
         var loggerMock = new Mock<ILogger<LongMethodDetector>>();
-        var detector = new LongMethodDetector(loggerMock.Object);
+        var detector = new LongMethodDetector(
+            optionsMock.Object,
+            loggerMock.Object);
+
+        _ = optionsMock.Setup(x => x.Value)
+                       .Returns(new LongMethodDetectorOptions { MethodLineCountThreshold = 15 });
+
         string fileContents = @"
             public class TestClass
             {

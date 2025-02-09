@@ -1,17 +1,21 @@
 ﻿namespace CodeSmellDetection;
 
 using System.Linq;
+using CodeSmellDetection.Options;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 /// <summary>
 /// Detects methods with long parameter lists in C# source code.
 /// </summary>
-internal class LongParameterListDetector(ILogger<LongParameterListDetector> logger)
+internal class LongParameterListDetector(
+    IOptions<LongParameterListDetectorOptions> options,
+    ILogger<LongParameterListDetector> logger)
 {
-    private const int ParameterThreshold = 3;
+    private readonly IOptions<LongParameterListDetectorOptions> options = options;
     private readonly ILogger<LongParameterListDetector> logger = logger;
 
     /// <summary>
@@ -22,10 +26,11 @@ internal class LongParameterListDetector(ILogger<LongParameterListDetector> logg
     {
         var tree = CSharpSyntaxTree.ParseText(fileContents);
         var root = tree.GetRoot();
+        var parameterThreshold = this.options.Value.ParameterThreshold;
 
         var methodsWithLongParameterLists = root.DescendantNodes()
             .OfType<MethodDeclarationSyntax>()
-            .Where(m => m.ParameterList.Parameters.Count > ParameterThreshold);
+            .Where(m => m.ParameterList.Parameters.Count > parameterThreshold);
 
         foreach (var method in methodsWithLongParameterLists)
         {

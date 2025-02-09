@@ -1,7 +1,9 @@
 namespace CodeSmellDetectionTest;
 
 using CodeSmellDetection;
+using CodeSmellDetection.Options;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 
@@ -11,8 +13,12 @@ public class LongParameterListDetectorTest
     public void DetectLongParameterLists_ShouldDetectMethodsWithLongParameterLists()
     {
         // Arrange
+        var longParameterListDetectorOptions = new Mock<IOptions<LongParameterListDetectorOptions>>();
         var loggerMock = new Mock<ILogger<LongParameterListDetector>>();
-        var detector = new LongParameterListDetector(loggerMock.Object);
+        var detector = new LongParameterListDetector(
+            longParameterListDetectorOptions.Object,
+            loggerMock.Object);
+
         var fileContents = @"
             public class TestClass
             {
