@@ -12,6 +12,8 @@ var host = Host.CreateDefaultBuilder(args)
             $"appsettings.{context.HostingEnvironment.EnvironmentName}.json",
             optional: true,
             reloadOnChange: true);
+
+        Console.WriteLine($"Loaded configuration for environment: {context.HostingEnvironment.EnvironmentName}");
     })
     .ConfigureServices((context, services) =>
     {
