@@ -36,7 +36,7 @@ public class DuplicatedCodeDetectorTest
         // Assert
         loggerMock.Verify(
             x => x.Log(
-                It.Is<LogLevel>(l => l == LogLevel.Information),
+                It.Is<LogLevel>(l => l == LogLevel.Warning),
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Duplicated code detected between lines 2 and 4")),
                 It.IsAny<Exception?>(),
@@ -70,7 +70,7 @@ public class DuplicatedCodeDetectorTest
         // Assert
         loggerMock.Verify(
             x => x.Log(
-                It.Is<LogLevel>(l => l == LogLevel.Information),
+                It.Is<LogLevel>(l => l == LogLevel.Warning),
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Duplicated code detected")),
                 It.IsAny<Exception?>(),

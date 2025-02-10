@@ -34,7 +34,7 @@ internal class LongParameterListDetector(
 
         foreach (var method in methodsWithLongParameterLists)
         {
-            this.logger.LogInformation($"Method '{method.Identifier}' has a long parameter list with {method.ParameterList.Parameters.Count} parameters.");
+            this.logger.LogWarning($"Method '{method.Identifier}' has a long parameter list with {method.ParameterList.Parameters.Count} parameters.");
         }
     }
 }

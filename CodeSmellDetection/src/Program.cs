@@ -29,15 +29,15 @@ var host = Host.CreateDefaultBuilder(args)
     })
     .Build();
 
-var configuration = host.Services.GetRequiredService<IConfiguration>();
-var longMethodDetector = host.Services.GetRequiredService<LongMethodDetector>();
-var longParameterListDetector = host.Services.GetRequiredService<LongParameterListDetector>();
-var duplicatedCodeDetector = host.Services.GetRequiredService<DuplicatedCodeDetector>();
-
 try
 {
+    var configuration = host.Services.GetRequiredService<IConfiguration>();
     string? pathToCodeFile = configuration["PathToCodeFile"] ?? throw new InvalidOperationException("Path to code file not found in configuration.");
     string fileContents = File.ReadAllText(pathToCodeFile);
+
+    var longMethodDetector = host.Services.GetRequiredService<LongMethodDetector>();
+    var longParameterListDetector = host.Services.GetRequiredService<LongParameterListDetector>();
+    var duplicatedCodeDetector = host.Services.GetRequiredService<DuplicatedCodeDetector>();
 
     longMethodDetector.DetectLongMethods(fileContents);
     longParameterListDetector.DetectLongParameterLists(fileContents);

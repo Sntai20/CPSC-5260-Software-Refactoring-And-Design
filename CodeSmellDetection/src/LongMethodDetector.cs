@@ -49,7 +49,7 @@ internal class LongMethodDetector(
             {
                 if (inMethod && methodLineCount >= methodLineCountThreshold)
                 {
-                    this.logger.LogInformation("Long Method Detected");
+                    this.logger.LogWarning("Long Method Detected");
                 }
 
                 inMethod = false;

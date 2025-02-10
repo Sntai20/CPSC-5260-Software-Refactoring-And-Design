@@ -47,7 +47,7 @@ internal class DuplicatedCodeDetector(
 
                 if (jaccardSimilarity >= this.options.Value.JaccardThreshold)
                 {
-                    this.logger.LogInformation($"Duplicated code detected between lines {i + 1} and {j + 1} with Jaccard similarity {jaccardSimilarity}");
+                    this.logger.LogWarning($"Duplicated code detected between lines {i + 1} and {j + 1} with Jaccard similarity {jaccardSimilarity}");
                 }
             }
         }

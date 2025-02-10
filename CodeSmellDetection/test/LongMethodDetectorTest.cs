@@ -58,7 +58,7 @@ public class LongMethodDetectorTest
         // Assert
         loggerMock.Verify(
             x => x.Log(
-                It.Is<LogLevel>(l => l == LogLevel.Information),
+                It.Is<LogLevel>(l => l == LogLevel.Warning),
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Long Method Detected")),
                 It.IsAny<Exception?>(),
@@ -97,7 +97,7 @@ public class LongMethodDetectorTest
         // Assert
         loggerMock.Verify(
             x => x.Log(
-                It.Is<LogLevel>(l => l == LogLevel.Information),
+                It.Is<LogLevel>(l => l == LogLevel.Warning),
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Long Method Detected")),
                 It.IsAny<Exception?>(),

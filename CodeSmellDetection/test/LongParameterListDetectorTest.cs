@@ -35,7 +35,7 @@ public class LongParameterListDetectorTest
         // Assert
         loggerMock.Verify(
             x => x.Log(
-                It.Is<LogLevel>(l => l == LogLevel.Information),
+                It.Is<LogLevel>(l => l == LogLevel.Warning),
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Method 'MethodWithManyParameters' has a long parameter list with 4 parameters.")),
                 It.IsAny<Exception?>(),
