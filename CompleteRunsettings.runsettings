@@ -51,7 +51,7 @@
                     <ExcludeByAttribute>Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute</ExcludeByAttribute>
                     <SingleHit>false</SingleHit>
                     <UseSourceLink>true</UseSourceLink>
-                    <IncludeTestAssembly>true</IncludeTestAssembly>
+                    <IncludeTestAssembly>false</IncludeTestAssembly>
                     <SkipAutoProps>true</SkipAutoProps>
                     <DeterministicReport>false</DeterministicReport>
                     <ExcludeAssembliesWithoutSources>MissingAll,MissingAny,None</ExcludeAssembliesWithoutSources>
