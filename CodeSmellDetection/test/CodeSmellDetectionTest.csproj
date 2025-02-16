@@ -31,8 +31,6 @@
       <Link>Resources\%(RecursiveDir)%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Remove="Resources\CodeSmellTestData.cs" />
   </ItemGroup>
 </Project>
