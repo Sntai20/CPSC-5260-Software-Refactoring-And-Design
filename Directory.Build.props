@@ -36,8 +36,8 @@
       <Visible>false</Visible>
     </AdditionalFiles>
     <!-- At present, being CLSCompliant is not a requirement and provides us no upside, while restricting some code use. -->
-    <AssemblyAttribute Include="CLSCompliant">  
-      <_Parameter1>false</_Parameter1>  
+    <AssemblyAttribute Include="CLSCompliant">
+      <_Parameter1>false</_Parameter1>
       <_Parameter1_IsLiteral>true</_Parameter1_IsLiteral>
     </AssemblyAttribute>
   </ItemGroup>
