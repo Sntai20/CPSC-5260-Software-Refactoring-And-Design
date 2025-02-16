@@ -7,13 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeSmellDetection", "CodeS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeSmellDetectionTest", "CodeSmellDetection\test\CodeSmellDetectionTest.csproj", "{4CF1F0EB-4813-4330-A1BA-083A40C3C1B4}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AppHost", "AppHost", "{90DCE71B-4939-B80A-CE8C-85DE2210C7AC}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{96659387-747B-E89F-CAD1-28513F380654}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppHost", "AppHost\src\AppHost.csproj", "{10602958-710C-42AC-97DB-2BDB8082B9B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceDefaults", "ServiceDefaults\ServiceDefaults\ServiceDefaults.csproj", "{A0CECF7C-6D58-4116-B8F7-6B147E85BB8A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceDefaults", "ServiceDefaults\src\ServiceDefaults.csproj", "{A0CECF7C-6D58-4116-B8F7-6B147E85BB8A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -76,10 +72,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{96659387-747B-E89F-CAD1-28513F380654} = {90DCE71B-4939-B80A-CE8C-85DE2210C7AC}
-		{10602958-710C-42AC-97DB-2BDB8082B9B5} = {96659387-747B-E89F-CAD1-28513F380654}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B459C46A-B2B4-43A7-95E4-966076280FD0}
