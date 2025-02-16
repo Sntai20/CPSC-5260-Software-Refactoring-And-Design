@@ -17,6 +17,12 @@
              2 = Given number of processes up to limit by number of cores on machine -->
         <MaxCpuCount>0</MaxCpuCount>
 
+        <!-- Directory for test run reports. E.g. trx, coverage etc.-->
+        <ResultsDirectory>out/TestResults</ResultsDirectory>
+
+        <!-- Working directory for test invocation. Used by IDEs. -->
+        <SolutionDirectory>out/TestResults</SolutionDirectory> 
+
         <!-- Specify timeout in milliseconds. A valid value should be >= 0. If 0, timeout will be infinity. Testplatform
              will cancel the test run after it exceeded given TestSessionTimeout in milliseconds and will show the
              results of tests which ran till that point. -->
@@ -161,6 +167,16 @@
             <Logger friendlyName="console" enabled="True">
                 <Configuration>
                     <Verbosity>Diagnostic</Verbosity>
+                </Configuration>
+            </Logger>
+            <Logger friendlyName="trx" enabled="True">
+                <Configuration>
+                    <Verbosity>Diagnostic</Verbosity>
+                </Configuration>
+            </Logger>
+            <Logger friendlyName="xunit" enabled="True">
+                <Configuration>
+                    <LogFileName>{assembly}.{framework}.results.xml</LogFileName>
                 </Configuration>
             </Logger>
         </Loggers>
