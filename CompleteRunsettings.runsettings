@@ -174,11 +174,6 @@
                     <Verbosity>Diagnostic</Verbosity>
                 </Configuration>
             </Logger>
-            <Logger friendlyName="xunit" enabled="True">
-                <Configuration>
-                    <LogFileName>{assembly}.{framework}.results.xml</LogFileName>
-                </Configuration>
-            </Logger>
         </Loggers>
     </LoggerRunSettings>
 
