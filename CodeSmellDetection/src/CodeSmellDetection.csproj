@@ -35,4 +35,7 @@
     </Content>
     <Compile Remove="Resources\CodeSmellTestData.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ServiceDefaults\src\ServiceDefaults.csproj" />
+  </ItemGroup>
 </Project>

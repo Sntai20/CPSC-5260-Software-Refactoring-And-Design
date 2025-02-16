@@ -4,30 +4,24 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-var host = Host.CreateDefaultBuilder(args)
-    .ConfigureAppConfiguration((context, config) =>
-    {
-        _ = config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-        _ = config.AddJsonFile(
-            $"appsettings.{context.HostingEnvironment.EnvironmentName}.json",
-            optional: true,
-            reloadOnChange: true);
+var hostApplicationBuilder = Host.CreateApplicationBuilder(args)
+    .AddServiceDefaults();
 
-        Console.WriteLine($"Loaded configuration for environment: {context.HostingEnvironment.EnvironmentName}");
-    })
-    .ConfigureServices((context, services) =>
-    {
-        _ = services.AddOptions<LongMethodDetectorOptions>()
-                    .Bind(context.Configuration.GetSection("LongMethodDetectorOptions"));
-        _ = services.AddOptions<LongParameterListDetectorOptions>()
-                    .Bind(context.Configuration.GetSection("LongParameterListDetectorOptions"));
-        _ = services.AddOptions<DuplicatedCodeDetectorOptions>()
-                    .Bind(context.Configuration.GetSection("DuplicatedCodeDetectorOptions"));
-        _ = services.AddSingleton<LongMethodDetector>();
-        _ = services.AddSingleton<LongParameterListDetector>();
-        _ = services.AddSingleton<DuplicatedCodeDetector>();
-    })
-    .Build();
+hostApplicationBuilder.Services.AddOptions<LongMethodDetectorOptions>()
+    .BindConfiguration("LongMethodDetectorOptions");
+
+hostApplicationBuilder.Services.AddOptions<LongParameterListDetectorOptions>()
+    .BindConfiguration("LongParameterListDetectorOptions");
+
+hostApplicationBuilder.Services.AddOptions<DuplicatedCodeDetectorOptions>()
+    .BindConfiguration("DuplicatedCodeDetectorOptions");
+
+hostApplicationBuilder.Services
+    .AddSingleton<LongMethodDetector>()
+    .AddSingleton<LongParameterListDetector>()
+    .AddSingleton<DuplicatedCodeDetector>();
+
+IHost? host = hostApplicationBuilder.Build();
 
 try
 {
