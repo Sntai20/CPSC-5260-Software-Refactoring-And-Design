@@ -402,3 +402,6 @@ FodyWeavers.xsd
 
 # NuGet
 /.nuget
+
+# Mac specific files
+.DS_Store
