@@ -21,7 +21,7 @@
         <ResultsDirectory>out/TestResults</ResultsDirectory>
 
         <!-- Working directory for test invocation. Used by IDEs. -->
-        <SolutionDirectory>out/TestResults</SolutionDirectory> 
+        <SolutionDirectory>out/TestResults</SolutionDirectory>
 
         <!-- Specify timeout in milliseconds. A valid value should be >= 0. If 0, timeout will be infinity. Testplatform
              will cancel the test run after it exceeded given TestSessionTimeout in milliseconds and will show the
