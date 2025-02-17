@@ -9,8 +9,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" />
   </ItemGroup>
 
   <!-- Allow the associated Test project to test internals -->
