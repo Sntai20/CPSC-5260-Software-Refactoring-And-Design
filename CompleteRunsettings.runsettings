@@ -77,7 +77,6 @@
                                 <ModulePath>.*\.exe$</ModulePath>
                             </Include>
                             <Exclude>
-                                <ModulePath>.*CPPUnitTestFramework.*</ModulePath>
                                 <ModulePath>.*TestAdapter.*</ModulePath>
                                 <ModulePath>.*nunit.*</ModulePath>
                                 <ModulePath>.*xunit.*</ModulePath>
@@ -93,12 +92,6 @@
                                 <Function>^CodeSmellDetection\..*</Function>
                             </Include>
                             <Exclude>
-                                <Function>^Fabrikam\.UnitTest\..*</Function>
-                                <Function>^std::.*</Function>
-                                <Function>^ATL::.*</Function>
-                                <Function>.*::__GetTestMethodInfo.*</Function>
-                                <Function>^Microsoft::VisualStudio::CppCodeCoverageFramework::.*</Function>
-                                <Function>^Microsoft::VisualStudio::CppUnitTestFramework::.*</Function>
                                 <Function>^Microsoft\.Azure\..*</Function>
                             </Exclude>
                         </Functions>
