@@ -72,6 +72,10 @@
 
                         <!-- Match assembly file paths: -->
                         <ModulePaths>
+                            <Include>
+                                <ModulePath>.*\.dll$</ModulePath>
+                                <ModulePath>.*\.exe$</ModulePath>
+                            </Include>
                             <Exclude>
                                 <ModulePath>.*CPPUnitTestFramework.*</ModulePath>
                                 <ModulePath>.*TestAdapter.*</ModulePath>
