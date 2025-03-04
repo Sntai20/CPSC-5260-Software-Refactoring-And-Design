@@ -1,5 +1,5 @@
 ﻿# top-most EditorConfig file
-root = false
+root = true
 
 [*.cs]
 
