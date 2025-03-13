@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceDefaults", "ServiceD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lecture", "Lecture\src\Lecture.csproj", "{54222D89-D594-4267-A9BE-792D066C2A97}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserInterface", "UserInterface\src\UserInterface.csproj", "{B46E5DBB-CA75-2729-6B20-3F1457703898}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -39,6 +41,10 @@ Global
 		{54222D89-D594-4267-A9BE-792D066C2A97}.Debug|x64.Build.0 = Debug|x64
 		{54222D89-D594-4267-A9BE-792D066C2A97}.Release|x64.ActiveCfg = Release|x64
 		{54222D89-D594-4267-A9BE-792D066C2A97}.Release|x64.Build.0 = Release|x64
+		{B46E5DBB-CA75-2729-6B20-3F1457703898}.Debug|x64.ActiveCfg = Debug|x64
+		{B46E5DBB-CA75-2729-6B20-3F1457703898}.Debug|x64.Build.0 = Debug|x64
+		{B46E5DBB-CA75-2729-6B20-3F1457703898}.Release|x64.ActiveCfg = Release|x64
+		{B46E5DBB-CA75-2729-6B20-3F1457703898}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
