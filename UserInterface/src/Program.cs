@@ -9,6 +9,14 @@ builder.AddServiceDefaults();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+// TODO: Add a service to detect code smells.
+// builder.Services.AddSingleton<CodeSmellDetectionService>();
+
+// TODO: Add upload file functionality.
+// builder.Services.AddSingleton<UploadFileService>();
+
+// TODO: Add a service to handle the API calls to Azure OpenAI.
+// builder.Services.AddSingleton<AzureOpenAIService>();
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
