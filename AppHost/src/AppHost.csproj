@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\CodeSmellDetection\src\CodeSmellDetection.csproj" />
+    <ProjectReference Include="..\..\UserInterface\src\UserInterface.csproj" />
   </ItemGroup>
 
 </Project>
