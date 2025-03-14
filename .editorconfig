@@ -1,7 +1,7 @@
 ﻿# top-most EditorConfig file
 root = true
 
-[*.cs]
+[*.{cs,razor}]
 
 # Disable all diagnostics by default. Will be set to warning on all projects once all diagnostics are resolved.
 dotnet_diagnostic.*.severity = none
