@@ -26,7 +26,7 @@
   <PropertyGroup Condition="'$(MSBuildProjectName)' == '*Test'">
       <RunSettingsFilePath>$(MSBuildThisFileDirectory)\CompleteRunsettings.runsettings</RunSettingsFilePath>
   </PropertyGroup>
-  <ItemGroup Condition="'$(MSBuildProjectExtension)' == '.csproj'">
+  <ItemGroup Condition="'$(MSBuildProjectExtension)' == '.csproj' and '$(MSBuildProjectName)' != 'Lecture'">
     <PackageReference Include="StyleCop.Analyzers">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
