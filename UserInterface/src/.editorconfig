@@ -65,6 +65,10 @@ dotnet_diagnostic.CA1862.severity = none
 # CA2253: Named placeholders should not be numeric values
 dotnet_diagnostic.CA2253.severity = none
 
+# CA5394: Do not use insecure randomness
+# This rule is not a concern for the current project.
+dotnet_diagnostic.CA5394.severity = none
+
 # CS1591: Missing XML comment for publicly visible type or member
 dotnet_diagnostic.CS1591.severity = none
 
