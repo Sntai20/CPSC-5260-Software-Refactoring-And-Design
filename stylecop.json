@@ -6,6 +6,9 @@
     },
     "maintainabilityRules": {
       "topLevelTypes": [ "class", "interface", "delegate", "enum", "struct" ]
+    },
+    "layoutRules": {
+      "newlineAtEndOfFile": "omit"
     }
   }
 }
