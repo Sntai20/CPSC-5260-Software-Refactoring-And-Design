@@ -161,6 +161,10 @@ dotnet_diagnostic.CA2007.severity = none
 # This will be a sizable effort which is difficult considering logging that preexisted ILogger.
 dotnet_diagnostic.CA2254.severity = none
 
+# CA5394: Do not use insecure randomness
+# This rule is not a concern for the current project.
+dotnet_diagnostic.CA5394.severity = none
+
 # IDE0230: Use UTF-8 string literal
 # Sometimes misinterprets byte value to be UTF-8 characters when they are not intended as such.
 dotnet_diagnostic.IDE0230.severity = suggestion
