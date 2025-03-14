@@ -1,7 +1,7 @@
 ﻿# top-most EditorConfig file
 root = false
 
-[*.cs]
+[*.{cs,razor}]
 
 #### Rule suppressions ####
 
