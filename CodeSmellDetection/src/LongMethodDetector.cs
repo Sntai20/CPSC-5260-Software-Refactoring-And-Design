@@ -1,5 +1,6 @@
 ﻿namespace CodeSmellDetection;
 
+using CodeSmellDetection.Models;
 using CodeSmellDetection.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -14,46 +15,71 @@ internal class LongMethodDetector(
     private readonly IOptions<LongMethodDetectorOptions> options = options;
     private readonly ILogger<LongMethodDetector> logger = logger;
 
-    /// <summary>
-    /// Detects methods in the provided file contents that exceed a certain line count.
-    /// </summary>
-    /// <param name="fileContents">The contents of the file to analyze.</param>
-    public void DetectLongMethods(string fileContents)
+    public CodeSmell Detect(string fileContents)
     {
         int methodLineCount = 0;
+        int currentLineNumber = 0;
+        int methodStartLine = 0;
         bool inMethod = false;
         var methodLineCountThreshold = this.options.Value.MethodLineCountThreshold;
 
         foreach (var line in fileContents.Split(Environment.NewLine))
         {
-            if (line.Trim().StartsWith("public", StringComparison.Ordinal) ||
-                line.Trim().StartsWith("private", StringComparison.Ordinal) ||
-                line.Trim().StartsWith("protected", StringComparison.Ordinal) ||
-                line.Trim().StartsWith("internal", StringComparison.Ordinal))
+            currentLineNumber++;
+            var trimmedLine = line.Trim();
+
+            if (IsMethodDeclaration(trimmedLine))
             {
                 if (inMethod && methodLineCount >= methodLineCountThreshold)
                 {
-                    this.logger.LogInformation("Long Method Detected");
+                    this.logger.LogInformation("Long Method Detected.");
+                    return CreateCodeSmell(fileContents, methodStartLine, currentLineNumber);
                 }
 
                 inMethod = true;
                 methodLineCount = 0;
+                methodStartLine = currentLineNumber;
             }
 
-            if (inMethod && !string.IsNullOrWhiteSpace(line))
+            if (inMethod && !string.IsNullOrWhiteSpace(trimmedLine))
             {
                 methodLineCount++;
             }
 
-            if (line.Trim() == "}")
+            if (trimmedLine == "}")
             {
                 if (inMethod && methodLineCount >= methodLineCountThreshold)
                 {
-                    this.logger.LogWarning("Long Method Detected");
+                    this.logger.LogWarning("Long Method Detected.");
+                    return CreateCodeSmell(fileContents, methodStartLine, currentLineNumber);
                 }
 
                 inMethod = false;
             }
         }
+
+        this.logger.LogInformation("Long Method Not Detected.");
+        return null;
+    }
+
+    private static bool IsMethodDeclaration(string line)
+    {
+        return line.StartsWith("public", StringComparison.Ordinal) ||
+               line.StartsWith("private", StringComparison.Ordinal) ||
+               line.StartsWith("protected", StringComparison.Ordinal) ||
+               line.StartsWith("internal", StringComparison.Ordinal);
+    }
+
+    private static CodeSmell CreateCodeSmell(string fileContents, int startLine, int endLine)
+    {
+        return new CodeSmell
+        {
+            Type = CodeSmellType.LongMethod,
+            Description = "Long Method Detected",
+            LineNumber = endLine,
+            StartLine = startLine,
+            EndLine = endLine,
+            Code = fileContents,
+        };
     }
 }

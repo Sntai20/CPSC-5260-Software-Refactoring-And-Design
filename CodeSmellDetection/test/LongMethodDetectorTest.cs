@@ -53,21 +53,24 @@ public class LongMethodDetectorTest
             }";
 
         // Act
-        detector.DetectLongMethods(fileContents);
+        var codeSmell = detector.Detect(fileContents);
 
         // Assert
         loggerMock.Verify(
             x => x.Log(
                 It.Is<LogLevel>(l => l == LogLevel.Warning),
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Long Method Detected")),
+                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Long Method Detected.")),
                 It.IsAny<Exception?>(),
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
             Times.Once);
+        Assert.NotEmpty(codeSmell.Code);
+        Assert.Equal(9, codeSmell.StartLine);
+        Assert.Equal(28, codeSmell.LineNumber);
     }
 
     [Fact]
-    public void DetectLongMethods_NoLongMethodDetected_DoesNotLogInformation()
+    public void DetectLongMethods_NoLongMethodDetected_LogsInformation()
     {
         // Arrange
         var optionsMock = new Mock<IOptions<LongMethodDetectorOptions>>();
@@ -92,16 +95,17 @@ public class LongMethodDetectorTest
             }";
 
         // Act
-        detector.DetectLongMethods(fileContents);
+        var codeSmell = detector.Detect(fileContents);
 
         // Assert
         loggerMock.Verify(
             x => x.Log(
-                It.Is<LogLevel>(l => l == LogLevel.Warning),
+                It.Is<LogLevel>(l => l == LogLevel.Information),
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Long Method Detected")),
+                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Long Method Not Detected.")),
                 It.IsAny<Exception?>(),
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
-            Times.Never);
+            Times.Once);
+        Assert.Null(codeSmell);
     }
 }
