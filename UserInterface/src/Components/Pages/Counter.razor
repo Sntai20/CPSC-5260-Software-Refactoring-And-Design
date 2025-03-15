@@ -4,18 +4,42 @@
 
 <PageTitle>Code Smell Detection Counter</PageTitle>
 
-<h1>Code Smell Detection Counter</h1>
+<h2>Code Smell Counter</h2>
 
 <p role="status">Current code smell count: @currentCount</p>
 
-<button class="btn btn-primary" @onclick="DetectCodeSmells">Click me</button>
+@if (isLoading)
+{
+    <p>Loading...</p>
+}
+else if (!string.IsNullOrEmpty(errorMessage))
+{
+    <p class="text-danger">@errorMessage</p>
+}
+
+<button class="btn btn-primary" @onclick="DetectCodeSmells" disabled="@isLoading">Click me</button>
 
 @code {
     private int currentCount = 0;
+    private bool isLoading = false;
+    private string? errorMessage;
 
-    private void DetectCodeSmells()
+    private async Task DetectCodeSmells()
     {
-        var codeSmell = CodeSmellDetectionService.Detect();
-        currentCount = codeSmell.Count();
+        isLoading = true;
+        errorMessage = null;
+        try
+        {
+            var codeSmell = await CodeSmellDetectionService.DetectAsync();
+            currentCount = codeSmell.Count();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error detecting code smells: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+        }
     }
 }
