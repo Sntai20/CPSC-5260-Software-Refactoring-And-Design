@@ -8,19 +8,19 @@ using ServiceDefaults;
 var hostApplicationBuilder = Host.CreateApplicationBuilder(args)
     .AddServiceDefaults();
 
+hostApplicationBuilder.Services.AddOptions<DuplicatedCodeDetectorOptions>()
+    .BindConfiguration("DuplicatedCodeDetectorOptions");
+
 hostApplicationBuilder.Services.AddOptions<LongMethodDetectorOptions>()
     .BindConfiguration("LongMethodDetectorOptions");
 
 hostApplicationBuilder.Services.AddOptions<LongParameterListDetectorOptions>()
     .BindConfiguration("LongParameterListDetectorOptions");
 
-hostApplicationBuilder.Services.AddOptions<DuplicatedCodeDetectorOptions>()
-    .BindConfiguration("DuplicatedCodeDetectorOptions");
-
 hostApplicationBuilder.Services
+    .AddSingleton<DuplicatedCodeDetector>()
     .AddSingleton<LongMethodDetector>()
     .AddSingleton<LongParameterListDetector>()
-    .AddSingleton<DuplicatedCodeDetector>()
     .AddSingleton<CodeSmellDetectionService>();
 
 IHost? host = hostApplicationBuilder.Build();
