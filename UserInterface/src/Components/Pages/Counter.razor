@@ -4,9 +4,9 @@
 
 <PageTitle>Code Smell Detection Counter</PageTitle>
 
-<h2>Code Smell Counter</h2>
-
 <p role="status">Current code smell count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="DetectCodeSmells" disabled="@isLoading">Click me</button>
 
 @if (isLoading)
 {
@@ -16,22 +16,50 @@ else if (!string.IsNullOrEmpty(errorMessage))
 {
     <p class="text-danger">@errorMessage</p>
 }
+else if (codeSmells != null && codeSmells.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Line Number</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var codeSmell in codeSmells)
+            {
+                <tr>
+                    <td>@codeSmell.Type</td>
+                    <td>@codeSmell.Description</td>
+                    <td>@codeSmell.LineNumber</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
-<button class="btn btn-primary" @onclick="DetectCodeSmells" disabled="@isLoading">Click me</button>
+@if (codeSmells != null && codeSmells.Any())
+{
+    <h3>File Content</h3>
+    <pre>@codeSmells.First().Code</pre>
+}
 
 @code {
     private int currentCount = 0;
     private bool isLoading = false;
     private string? errorMessage;
+    private List<CodeSmellDetection.Models.CodeSmell>? codeSmells;
 
     private async Task DetectCodeSmells()
     {
         isLoading = true;
         errorMessage = null;
+        codeSmells = null;
         try
         {
-            var codeSmell = await CodeSmellDetectionService.DetectAsync();
-            currentCount = codeSmell.Count();
+            codeSmells = await CodeSmellDetectionService.DetectAsync();
+            currentCount = codeSmells.Count;
         }
         catch (Exception ex)
         {
