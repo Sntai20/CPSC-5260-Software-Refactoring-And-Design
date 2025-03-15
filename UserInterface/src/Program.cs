@@ -1,19 +1,14 @@
+using CodeSmellDetection;
 using ServiceDefaults;
 using UserInterface.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
-
-// Add services to the container.
-builder.Services.AddRazorComponents()
+builder.Services
+    .AddRazorComponents()
     .AddInteractiveServerComponents();
-
-// TODO: Add a service to detect code smells.
-// builder.Services.AddSingleton<CodeSmellDetectionService>();
-
-// TODO: Add upload file functionality.
-// builder.Services.AddSingleton<UploadFileService>();
+builder.Services.AddCodeSmellDetectionService();
 
 // TODO: Add a service to handle the API calls to Azure OpenAI.
 // builder.Services.AddSingleton<AzureOpenAIService>();
@@ -36,6 +31,6 @@ app.UseAntiforgery();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+   .AddInteractiveServerRenderMode();
 
 app.Run();
