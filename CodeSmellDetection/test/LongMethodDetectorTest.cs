@@ -65,6 +65,8 @@ public class LongMethodDetectorTest
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
             Times.Once);
         Assert.NotEmpty(codeSmell.Code);
+        Assert.Equal(9, codeSmell.StartLine);
+        Assert.Equal(28, codeSmell.LineNumber);
     }
 
     [Fact]
