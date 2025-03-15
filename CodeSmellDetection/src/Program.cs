@@ -12,7 +12,7 @@ IHost? host = hostApplicationBuilder.Build();
 
 try
 {
-    _ = host.Services.GetRequiredService<CodeSmellDetectionService>().Detect();
+    _ = host.Services.GetRequiredService<ICodeSmellDetectionService>().Detect();
 }
 catch (Exception ex)
 {
