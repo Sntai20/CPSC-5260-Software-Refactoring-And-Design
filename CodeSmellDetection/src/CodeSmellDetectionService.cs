@@ -4,12 +4,14 @@ using CodeSmellDetection.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
+/// <inheritdoc />
 internal class CodeSmellDetectionService(
     DuplicatedCodeDetector duplicatedCodeDetector,
     LongMethodDetector longMethodDetector,
     LongParameterListDetector longParameterListDetector,
     ILogger<CodeSmellDetectionService> logger,
     IConfiguration configuration)
+    : ICodeSmellDetectionService
 {
     private readonly DuplicatedCodeDetector duplicatedCodeDetector = duplicatedCodeDetector;
     private readonly LongMethodDetector longMethodDetector = longMethodDetector;
@@ -17,9 +19,11 @@ internal class CodeSmellDetectionService(
     private readonly ILogger<CodeSmellDetectionService> logger = logger;
     private readonly IConfiguration configuration = configuration;
 
+    /// <inheritdoc />
     public List<CodeSmell> Detect()
     {
-        string? pathToCodeFile = this.configuration["PathToCodeFile"] ?? throw new InvalidOperationException("Path to fileContents file not found in configuration.");
+        string? pathToCodeFile = this.configuration["PathToCodeFile"]
+                                 ?? throw new InvalidOperationException("Path to fileContents file not found in configuration.");
         string fileContents = File.ReadAllText(pathToCodeFile);
 
         var codeSmells = new List<CodeSmell>();
@@ -33,7 +37,7 @@ internal class CodeSmellDetectionService(
         var longParameterListSmells = this.longParameterListDetector.Detect(fileContents);
         codeSmells.AddRange(longParameterListSmells);
 
-        this.logger.LogInformation($"Detected {codeSmells.Count} fileContents smells in the provided fileContents.");
+        this.logger.LogInformation($"Detected {codeSmells.Count} code smells in the provided code file {pathToCodeFile}.");
 
         return codeSmells;
     }
