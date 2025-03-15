@@ -14,7 +14,7 @@ try
 {
     _ = host.Services.GetRequiredService<ICodeSmellDetectionService>().DetectAsync();
 }
-catch (Exception ex)
+catch (InvalidOperationException ex)
 {
     Console.WriteLine($"An error occurred: {ex.Message}");
 }
