@@ -1,6 +1,4 @@
-﻿namespace CodeSmellDetection;
-
-using CodeSmellDetection.Models;
+﻿namespace CodeSmellDetection.Models;
 
 public class CodeSmell
 {

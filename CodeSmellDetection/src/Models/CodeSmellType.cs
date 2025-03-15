@@ -4,5 +4,5 @@ public enum CodeSmellType
 {
     LongMethod,
     LargeClass,
-    DuplicatedCode
+    DuplicatedCode,
 }
