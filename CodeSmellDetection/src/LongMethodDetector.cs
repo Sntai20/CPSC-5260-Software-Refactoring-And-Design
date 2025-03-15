@@ -18,11 +18,14 @@ internal class LongMethodDetector(
     public CodeSmell Detect(string fileContents)
     {
         int methodLineCount = 0;
+        int currentLineNumber = 0;
+        int methodStartLine = 0;
         bool inMethod = false;
         var methodLineCountThreshold = this.options.Value.MethodLineCountThreshold;
 
         foreach (var line in fileContents.Split(Environment.NewLine))
         {
+            currentLineNumber++;
             var trimmedLine = line.Trim();
 
             if (IsMethodDeclaration(trimmedLine))
@@ -30,11 +33,12 @@ internal class LongMethodDetector(
                 if (inMethod && methodLineCount >= methodLineCountThreshold)
                 {
                     this.logger.LogInformation("Long Method Detected.");
-                    return CreateCodeSmell(fileContents, line.Length);
+                    return CreateCodeSmell(fileContents, methodStartLine, currentLineNumber);
                 }
 
                 inMethod = true;
                 methodLineCount = 0;
+                methodStartLine = currentLineNumber;
             }
 
             if (inMethod && !string.IsNullOrWhiteSpace(trimmedLine))
@@ -47,7 +51,7 @@ internal class LongMethodDetector(
                 if (inMethod && methodLineCount >= methodLineCountThreshold)
                 {
                     this.logger.LogWarning("Long Method Detected.");
-                    return CreateCodeSmell(fileContents, line.Length);
+                    return CreateCodeSmell(fileContents, methodStartLine, currentLineNumber);
                 }
 
                 inMethod = false;
@@ -66,13 +70,15 @@ internal class LongMethodDetector(
                line.StartsWith("internal", StringComparison.Ordinal);
     }
 
-    private static CodeSmell CreateCodeSmell(string fileContents, int lineLength)
+    private static CodeSmell CreateCodeSmell(string fileContents, int startLine, int endLine)
     {
         return new CodeSmell
         {
             Type = CodeSmellType.LongMethod,
             Description = "Long Method Detected",
-            LineNumber = lineLength,
+            LineNumber = endLine,
+            StartLine = startLine,
+            EndLine = endLine,
             Code = fileContents,
         };
     }
