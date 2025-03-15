@@ -12,11 +12,11 @@ IHost? host = hostApplicationBuilder.Build();
 
 try
 {
-    _ = host.Services.GetRequiredService<ICodeSmellDetectionService>().Detect();
+    _ = host.Services.GetRequiredService<ICodeSmellDetectionService>().DetectAsync();
 }
 catch (Exception ex)
 {
     Console.WriteLine($"An error occurred: {ex.Message}");
 }
 
-host.Run();
+await host.RunAsync();

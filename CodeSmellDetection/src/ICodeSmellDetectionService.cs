@@ -1,6 +1,7 @@
 ﻿namespace CodeSmellDetection;
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using CodeSmellDetection.Models;
 
 /// <summary>
@@ -9,8 +10,8 @@ using CodeSmellDetection.Models;
 public interface ICodeSmellDetectionService
 {
     /// <summary>
-    /// Detects code smells in the codebase.
+    /// Asynchronously detects code smells in the codebase.
     /// </summary>
-    /// <returns>A list of detected code smells.</returns>
-    List<CodeSmell> Detect();
+    /// <returns>A task that represents the asynchronous operation. The task result contains a list of detected code smells.</returns>
+    Task<List<CodeSmell>> DetectAsync();
 }
