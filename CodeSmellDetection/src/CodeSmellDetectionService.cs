@@ -30,9 +30,8 @@ internal class CodeSmellDetectionService(
         var longMethodSmells = this.longMethodDetector.Detect(fileContents);
         codeSmells.AddRange(longMethodSmells);
 
-        this.longParameterListDetector.Detect(fileContents);
-        /*var longParameterListSmells = this.longParameterListDetector.Detect(fileContents);
-        codeSmells.AddRange(longParameterListSmells);*/
+        var longParameterListSmells = this.longParameterListDetector.Detect(fileContents);
+        codeSmells.AddRange(longParameterListSmells);
 
         this.logger.LogInformation($"Detected {codeSmells.Count} fileContents smells in the provided fileContents.");
 
