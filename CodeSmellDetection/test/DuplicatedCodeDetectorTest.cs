@@ -31,7 +31,7 @@ public class DuplicatedCodeDetectorTest
             ";
 
         // Act
-        detector.Detect(fileContents);
+        var codeSmell = detector.Detect(fileContents);
 
         // Assert
         loggerMock.Verify(
@@ -42,6 +42,7 @@ public class DuplicatedCodeDetectorTest
                 It.IsAny<Exception?>(),
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
             Times.Once);
+        Assert.NotEmpty(codeSmell.Code);
     }
 
     [Fact]
@@ -65,16 +66,17 @@ public class DuplicatedCodeDetectorTest
             ";
 
         // Act
-        detector.Detect(fileContents);
+        var codeSmell = detector.Detect(fileContents);
 
         // Assert
         loggerMock.Verify(
             x => x.Log(
-                It.Is<LogLevel>(l => l == LogLevel.Warning),
+                It.Is<LogLevel>(l => l == LogLevel.Information),
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Duplicated code detected")),
+                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Duplicated code not detected.")),
                 It.IsAny<Exception?>(),
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
-            Times.Never);
+            Times.Once);
+        Assert.Null(codeSmell);
     }
 }
