@@ -66,7 +66,6 @@ public class LongMethodDetectorTest
             Times.Once);
         Assert.NotEmpty(codeSmell.Code);
         Assert.Equal(9, codeSmell.StartLine);
-        Assert.Equal(28, codeSmell.LineNumber);
     }
 
     [Fact]

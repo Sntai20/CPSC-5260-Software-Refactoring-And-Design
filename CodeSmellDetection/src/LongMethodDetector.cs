@@ -76,7 +76,7 @@ internal class LongMethodDetector(
         {
             Type = CodeSmellType.LongMethod,
             Description = "Long Method Detected",
-            LineNumber = endLine,
+            LineNumber = startLine,
             StartLine = startLine,
             EndLine = endLine,
             Code = fileContents,
