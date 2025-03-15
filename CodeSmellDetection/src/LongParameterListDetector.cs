@@ -42,9 +42,9 @@ internal class LongParameterListDetector(
                 Type = CodeSmellType.LongParameterLists,
                 Code = fileContents,
                 Description = $"Method '{method.Identifier}' has a long parameter list with {method.ParameterList.Parameters.Count} parameters.",
-                LineNumber = method.GetLocation().GetMappedLineSpan().StartLinePosition.Line,
-                StartLine = method.GetLocation().GetMappedLineSpan().StartLinePosition.Line,
-                EndLine = method.GetLocation().GetMappedLineSpan().EndLinePosition.Line,
+                LineNumber = method.GetLocation().GetMappedLineSpan().StartLinePosition.Line + 1,
+                StartLine = method.GetLocation().GetMappedLineSpan().StartLinePosition.Line + 1,
+                EndLine = method.GetLocation().GetMappedLineSpan().EndLinePosition.Line + 1,
                 SmellRecommendation = "Consider refactoring the method to reduce the number of parameters.",
                 SmellCodeRecommendation = $"public void {method.Identifier}({string.Join(", ", method.ParameterList.Parameters)}) {{ }}",
             };

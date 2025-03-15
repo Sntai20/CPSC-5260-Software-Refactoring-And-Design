@@ -53,6 +53,7 @@ public class LongParameterListDetectorTest
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
             Times.Once);
         Assert.NotEmpty(codeSmell.Code);
+        Assert.Equal(5, codeSmell.LineNumber);
     }
 
     [Fact]
