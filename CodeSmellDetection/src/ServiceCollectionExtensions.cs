@@ -19,7 +19,7 @@ public static class ServiceCollectionExtensions
         _ = services.AddSingleton<DuplicatedCodeDetector>()
             .AddSingleton<LongMethodDetector>()
             .AddSingleton<LongParameterListDetector>()
-            .AddSingleton<CodeSmellDetectionService>();
+            .AddSingleton<ICodeSmellDetectionService, CodeSmellDetectionService>();
 
         return services;
     }
