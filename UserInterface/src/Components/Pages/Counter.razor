@@ -41,8 +41,24 @@ else if (codeSmells != null && codeSmells.Any())
 
 @if (codeSmells != null && codeSmells.Any())
 {
-    <h3>File Content</h3>
-    <pre>@codeSmells.First().Code</pre>
+    <h2>File Content</h2>
+    <pre style="background-color: lightgray;">@GetCodeWithLineNumbers(codeSmells.First().Code)</pre>
+    <style>
+        pre {
+            position: relative;
+            padding-left: 3em;
+        }
+
+        pre::before {
+            content: attr(data-line-numbers);
+            position: absolute;
+            left: 0;
+            top: 0;
+            padding-right: 1em;
+            text-align: right;
+            color: gray;
+        }
+    </style>
 }
 
 @code {
@@ -69,5 +85,12 @@ else if (codeSmells != null && codeSmells.Any())
         {
             isLoading = false;
         }
+    }
+
+    private string GetCodeWithLineNumbers(string code)
+    {
+        var lines = code.Split(Environment.NewLine);
+        var numberedLines = lines.Select((line, index) => $"{index + 1}: {line}");
+        return string.Join(Environment.NewLine, numberedLines);
     }
 }
