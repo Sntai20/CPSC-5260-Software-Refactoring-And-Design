@@ -20,23 +20,14 @@ hostApplicationBuilder.Services.AddOptions<DuplicatedCodeDetectorOptions>()
 hostApplicationBuilder.Services
     .AddSingleton<LongMethodDetector>()
     .AddSingleton<LongParameterListDetector>()
-    .AddSingleton<DuplicatedCodeDetector>();
+    .AddSingleton<DuplicatedCodeDetector>()
+    .AddSingleton<CodeSmellDetectionService>();
 
 IHost? host = hostApplicationBuilder.Build();
 
 try
 {
-    var configuration = host.Services.GetRequiredService<IConfiguration>();
-    string? pathToCodeFile = configuration["PathToCodeFile"] ?? throw new InvalidOperationException("Path to code file not found in configuration.");
-    string fileContents = File.ReadAllText(pathToCodeFile);
-
-    var longMethodDetector = host.Services.GetRequiredService<LongMethodDetector>();
-    var longParameterListDetector = host.Services.GetRequiredService<LongParameterListDetector>();
-    var duplicatedCodeDetector = host.Services.GetRequiredService<DuplicatedCodeDetector>();
-
-    longMethodDetector.Detect(fileContents);
-    longParameterListDetector.Detect(fileContents);
-    duplicatedCodeDetector.Detect(fileContents);
+    _ = host.Services.GetRequiredService<CodeSmellDetectionService>().Detect();
 }
 catch (Exception ex)
 {

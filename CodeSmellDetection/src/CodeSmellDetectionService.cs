@@ -1,32 +1,40 @@
 namespace CodeSmellDetection;
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 internal class CodeSmellDetectionService(
     DuplicatedCodeDetector duplicatedCodeDetector,
     LongMethodDetector longMethodDetector,
     LongParameterListDetector longParameterListDetector,
-    ILogger<CodeSmellDetectionService> logger)
+    ILogger<CodeSmellDetectionService> logger,
+    IConfiguration configuration)
 {
     private readonly DuplicatedCodeDetector duplicatedCodeDetector = duplicatedCodeDetector;
     private readonly LongMethodDetector longMethodDetector = longMethodDetector;
     private readonly LongParameterListDetector longParameterListDetector = longParameterListDetector;
     private readonly ILogger<CodeSmellDetectionService> logger = logger;
+    private readonly IConfiguration configuration = configuration;
 
-    public List<CodeSmell> DetectCodeSmells(string code)
+    public List<CodeSmell> Detect()
     {
+        string? pathToCodeFile = this.configuration["PathToCodeFile"] ?? throw new InvalidOperationException("Path to fileContents file not found in configuration.");
+        string fileContents = File.ReadAllText(pathToCodeFile);
+
         var codeSmells = new List<CodeSmell>();
 
-        var duplicatedCodeSmells = this.duplicatedCodeDetector.Detect(code);
+        var duplicatedCodeSmells = this.duplicatedCodeDetector.Detect(fileContents);
         codeSmells.AddRange(duplicatedCodeSmells);
 
-        /*var longMethodSmells = this.longMethodDetector.Detect(code);
-        codeSmells.AddRange(longMethodSmells);
+        this.longMethodDetector.Detect(fileContents);
+        /*var longMethodSmells = this.longMethodDetector.Detect(fileContents);
+        codeSmells.AddRange(longMethodSmells);*/
 
-        var longParameterListSmells = this.longParameterListDetector.Detect(code);
+        this.longParameterListDetector.Detect(fileContents);
+        /*var longParameterListSmells = this.longParameterListDetector.Detect(fileContents);
         codeSmells.AddRange(longParameterListSmells);*/
 
-        this.logger.LogInformation($"Detected {codeSmells.Count} code smells in the provided code.");
+        this.logger.LogInformation($"Detected {codeSmells.Count} fileContents smells in the provided fileContents.");
 
         return codeSmells;
     }
