@@ -2,7 +2,7 @@
 
 public enum CodeSmellType
 {
-    LongMethod,
-    LargeClass,
     DuplicatedCode,
+    LongMethod,
+    LongParameterLists,
 }

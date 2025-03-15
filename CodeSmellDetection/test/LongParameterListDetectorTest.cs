@@ -30,7 +30,7 @@ public class LongParameterListDetectorTest
             }";
 
         // Act
-        detector.Detect(fileContents);
+        var codeSmell = detector.Detect(fileContents);
 
         // Assert
         loggerMock.Verify(
@@ -41,5 +41,40 @@ public class LongParameterListDetectorTest
                 It.IsAny<Exception?>(),
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
             Times.Once);
+        Assert.NotEmpty(codeSmell.Code);
+    }
+
+    [Fact]
+    public void DetectLongParameterLists_ShouldNotDetectMethodsWithShortParameterLists()
+    {
+        // Arrange
+        var longParameterListDetectorOptions = new Mock<IOptions<LongParameterListDetectorOptions>>();
+        var loggerMock = new Mock<ILogger<LongParameterListDetector>>();
+        var detector = new LongParameterListDetector(
+            longParameterListDetectorOptions.Object,
+            loggerMock.Object);
+        _ = longParameterListDetectorOptions.Setup(x => x.Value)
+                       .Returns(new LongParameterListDetectorOptions { ParameterThreshold = 3 });
+
+        var fileContents = @"
+            public class TestClass
+            {
+                public void MethodWithFewParameters(int a, int b) { }
+                public void MethodWithManyParameters(int a, int b, int c) { }
+            }";
+
+        // Act
+        var codeSmell = detector.Detect(fileContents);
+
+        // Assert
+        loggerMock.Verify(
+            x => x.Log(
+                It.Is<LogLevel>(l => l == LogLevel.Information),
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Methods with long parameter lists not detected.")),
+                It.IsAny<Exception?>(),
+                It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
+            Times.Once);
+        Assert.Null(codeSmell);
     }
 }

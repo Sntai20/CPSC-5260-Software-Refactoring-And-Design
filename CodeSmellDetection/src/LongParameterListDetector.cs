@@ -1,6 +1,7 @@
 ﻿namespace CodeSmellDetection;
 
 using System.Linq;
+using CodeSmellDetection.Models;
 using CodeSmellDetection.Options;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -22,7 +23,8 @@ internal class LongParameterListDetector(
     /// Detects methods with parameter lists longer than the specified threshold in the provided C# source code.
     /// </summary>
     /// <param name="fileContents">The contents of the C# source file to analyze.</param>
-    public void Detect(string fileContents)
+    /// <returns>A <see cref="CodeSmell"/> object representing the detected code smell, or null if no code smell is detected.</returns>
+    public CodeSmell Detect(string fileContents)
     {
         var tree = CSharpSyntaxTree.ParseText(fileContents);
         var root = tree.GetRoot();
@@ -35,6 +37,20 @@ internal class LongParameterListDetector(
         foreach (var method in methodsWithLongParameterLists)
         {
             this.logger.LogWarning($"Method '{method.Identifier}' has a long parameter list with {method.ParameterList.Parameters.Count} parameters.");
+            return new CodeSmell
+            {
+                Type = CodeSmellType.LongParameterLists,
+                Code = fileContents,
+                Description = $"Method '{method.Identifier}' has a long parameter list with {method.ParameterList.Parameters.Count} parameters.",
+                LineNumber = method.GetLocation().GetMappedLineSpan().StartLinePosition.Line,
+                StartLine = method.GetLocation().GetMappedLineSpan().StartLinePosition.Line,
+                EndLine = method.GetLocation().GetMappedLineSpan().EndLinePosition.Line,
+                SmellRecommendation = "Consider refactoring the method to reduce the number of parameters.",
+                SmellCodeRecommendation = $"public void {method.Identifier}({string.Join(", ", method.ParameterList.Parameters)}) {{ }}",
+            };
         }
+
+        this.logger.LogInformation("Methods with long parameter lists not detected.");
+        return null;
     }
 }
