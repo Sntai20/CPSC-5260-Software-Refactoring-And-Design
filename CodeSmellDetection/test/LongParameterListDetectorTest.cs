@@ -30,7 +30,7 @@ public class LongParameterListDetectorTest
             }";
 
         // Act
-        detector.DetectLongParameterLists(fileContents);
+        detector.Detect(fileContents);
 
         // Assert
         loggerMock.Verify(

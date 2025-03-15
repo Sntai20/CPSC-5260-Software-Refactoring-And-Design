@@ -34,8 +34,8 @@ try
     var longParameterListDetector = host.Services.GetRequiredService<LongParameterListDetector>();
     var duplicatedCodeDetector = host.Services.GetRequiredService<DuplicatedCodeDetector>();
 
-    longMethodDetector.DetectLongMethods(fileContents);
-    longParameterListDetector.DetectLongParameterLists(fileContents);
+    longMethodDetector.Detect(fileContents);
+    longParameterListDetector.Detect(fileContents);
     duplicatedCodeDetector.Detect(fileContents);
 }
 catch (Exception ex)

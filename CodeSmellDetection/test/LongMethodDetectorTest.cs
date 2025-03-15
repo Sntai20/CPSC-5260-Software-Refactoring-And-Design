@@ -53,7 +53,7 @@ public class LongMethodDetectorTest
             }";
 
         // Act
-        detector.DetectLongMethods(fileContents);
+        detector.Detect(fileContents);
 
         // Assert
         loggerMock.Verify(
@@ -92,7 +92,7 @@ public class LongMethodDetectorTest
             }";
 
         // Act
-        detector.DetectLongMethods(fileContents);
+        detector.Detect(fileContents);
 
         // Assert
         loggerMock.Verify(

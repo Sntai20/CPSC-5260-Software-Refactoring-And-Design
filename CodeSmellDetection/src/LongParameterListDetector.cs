@@ -22,7 +22,7 @@ internal class LongParameterListDetector(
     /// Detects methods with parameter lists longer than the specified threshold in the provided C# source code.
     /// </summary>
     /// <param name="fileContents">The contents of the C# source file to analyze.</param>
-    public void DetectLongParameterLists(string fileContents)
+    public void Detect(string fileContents)
     {
         var tree = CSharpSyntaxTree.ParseText(fileContents);
         var root = tree.GetRoot();

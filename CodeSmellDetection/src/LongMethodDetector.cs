@@ -18,7 +18,7 @@ internal class LongMethodDetector(
     /// Detects methods in the provided file contents that exceed a certain line count.
     /// </summary>
     /// <param name="fileContents">The contents of the file to analyze.</param>
-    public void DetectLongMethods(string fileContents)
+    public void Detect(string fileContents)
     {
         int methodLineCount = 0;
         bool inMethod = false;
