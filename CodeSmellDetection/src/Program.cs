@@ -36,7 +36,7 @@ try
 
     longMethodDetector.DetectLongMethods(fileContents);
     longParameterListDetector.DetectLongParameterLists(fileContents);
-    duplicatedCodeDetector.DetectDuplicatedCode(fileContents);
+    duplicatedCodeDetector.Detect(fileContents);
 }
 catch (Exception ex)
 {

@@ -31,7 +31,7 @@ public class DuplicatedCodeDetectorTest
             ";
 
         // Act
-        detector.DetectDuplicatedCode(fileContents);
+        detector.Detect(fileContents);
 
         // Assert
         loggerMock.Verify(
@@ -65,7 +65,7 @@ public class DuplicatedCodeDetectorTest
             ";
 
         // Act
-        detector.DetectDuplicatedCode(fileContents);
+        detector.Detect(fileContents);
 
         // Assert
         loggerMock.Verify(

@@ -21,7 +21,7 @@ internal class DuplicatedCodeDetector(
     /// Detects duplicated code within the provided file contents.
     /// </summary>
     /// <param name="fileContents">The contents of the file to analyze for duplicated code.</param>
-    public void DetectDuplicatedCode(string fileContents)
+    public void Detect(string fileContents)
     {
         var lineSets = new List<HashSet<string>>();
 
