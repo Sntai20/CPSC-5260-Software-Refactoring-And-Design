@@ -15,11 +15,6 @@ internal class LongMethodDetector(
     private readonly IOptions<LongMethodDetectorOptions> options = options;
     private readonly ILogger<LongMethodDetector> logger = logger;
 
-    /// <summary>
-    /// Detects methods in the provided file contents that exceed a certain line count.
-    /// </summary>
-    /// <param name="fileContents">The contents of the file to analyze.</param>
-    /// <returns>A <see cref="CodeSmell"/> object if a long method is detected; otherwise, null.</returns>
     public CodeSmell Detect(string fileContents)
     {
         int methodLineCount = 0;
@@ -28,45 +23,31 @@ internal class LongMethodDetector(
 
         foreach (var line in fileContents.Split(Environment.NewLine))
         {
-            if (line.Trim().StartsWith("public", StringComparison.Ordinal) ||
-                line.Trim().StartsWith("private", StringComparison.Ordinal) ||
-                line.Trim().StartsWith("protected", StringComparison.Ordinal) ||
-                line.Trim().StartsWith("internal", StringComparison.Ordinal))
+            var trimmedLine = line.Trim();
+
+            if (IsMethodDeclaration(trimmedLine))
             {
                 if (inMethod && methodLineCount >= methodLineCountThreshold)
                 {
                     this.logger.LogInformation("Long Method Detected.");
-                    return new CodeSmell
-                    {
-                        Type = CodeSmellType.LongMethod,
-                        Description = "Long Method Detected",
-                        LineNumber = line.Length,
-                        Code = fileContents,
-                    };
+                    return CreateCodeSmell(fileContents, line.Length);
                 }
 
                 inMethod = true;
                 methodLineCount = 0;
             }
 
-            if (inMethod && !string.IsNullOrWhiteSpace(line))
+            if (inMethod && !string.IsNullOrWhiteSpace(trimmedLine))
             {
                 methodLineCount++;
             }
 
-            if (line.Trim() == "}")
+            if (trimmedLine == "}")
             {
                 if (inMethod && methodLineCount >= methodLineCountThreshold)
                 {
                     this.logger.LogWarning("Long Method Detected.");
-
-                    return new CodeSmell
-                    {
-                        Type = CodeSmellType.LongMethod,
-                        Description = "Long Method Detected",
-                        LineNumber = line.Length,
-                        Code = fileContents,
-                    };
+                    return CreateCodeSmell(fileContents, line.Length);
                 }
 
                 inMethod = false;
@@ -75,5 +56,24 @@ internal class LongMethodDetector(
 
         this.logger.LogInformation("Long Method Not Detected.");
         return null;
+    }
+
+    private static bool IsMethodDeclaration(string line)
+    {
+        return line.StartsWith("public", StringComparison.Ordinal) ||
+               line.StartsWith("private", StringComparison.Ordinal) ||
+               line.StartsWith("protected", StringComparison.Ordinal) ||
+               line.StartsWith("internal", StringComparison.Ordinal);
+    }
+
+    private static CodeSmell CreateCodeSmell(string fileContents, int lineLength)
+    {
+        return new CodeSmell
+        {
+            Type = CodeSmellType.LongMethod,
+            Description = "Long Method Detected",
+            LineNumber = lineLength,
+            Code = fileContents,
+        };
     }
 }
