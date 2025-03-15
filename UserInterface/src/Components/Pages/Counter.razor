@@ -1,19 +1,21 @@
 ﻿@page "/counter"
 @rendermode InteractiveServer
+@inject ICodeSmellDetectionService CodeSmellDetectionService
 
-<PageTitle>Counter</PageTitle>
+<PageTitle>Code Smell Detection Counter</PageTitle>
 
-<h1>Counter</h1>
+<h1>Code Smell Detection Counter</h1>
 
-<p role="status">Current count: @currentCount</p>
+<p role="status">Current code smell count: @currentCount</p>
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+<button class="btn btn-primary" @onclick="DetectCodeSmells">Click me</button>
 
 @code {
     private int currentCount = 0;
 
-    private void IncrementCount()
+    private void DetectCodeSmells()
     {
-        currentCount++;
+        var codeSmell = CodeSmellDetectionService.Detect();
+        currentCount = codeSmell.Count();
     }
 }
