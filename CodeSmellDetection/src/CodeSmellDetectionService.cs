@@ -1,5 +1,6 @@
 namespace CodeSmellDetection;
 
+using CodeSmellDetection.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -26,9 +27,8 @@ internal class CodeSmellDetectionService(
         var duplicatedCodeSmells = this.duplicatedCodeDetector.Detect(fileContents);
         codeSmells.AddRange(duplicatedCodeSmells);
 
-        this.longMethodDetector.Detect(fileContents);
-        /*var longMethodSmells = this.longMethodDetector.Detect(fileContents);
-        codeSmells.AddRange(longMethodSmells);*/
+        var longMethodSmells = this.longMethodDetector.Detect(fileContents);
+        codeSmells.AddRange(longMethodSmells);
 
         this.longParameterListDetector.Detect(fileContents);
         /*var longParameterListSmells = this.longParameterListDetector.Detect(fileContents);

@@ -1,5 +1,6 @@
 ﻿namespace CodeSmellDetection;
 
+using CodeSmellDetection.Models;
 using CodeSmellDetection.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -18,7 +19,8 @@ internal class LongMethodDetector(
     /// Detects methods in the provided file contents that exceed a certain line count.
     /// </summary>
     /// <param name="fileContents">The contents of the file to analyze.</param>
-    public void Detect(string fileContents)
+    /// <returns>A <see cref="CodeSmell"/> object if a long method is detected; otherwise, null.</returns>
+    public CodeSmell Detect(string fileContents)
     {
         int methodLineCount = 0;
         bool inMethod = false;
@@ -33,7 +35,14 @@ internal class LongMethodDetector(
             {
                 if (inMethod && methodLineCount >= methodLineCountThreshold)
                 {
-                    this.logger.LogInformation("Long Method Detected");
+                    this.logger.LogInformation("Long Method Detected.");
+                    return new CodeSmell
+                    {
+                        Type = CodeSmellType.LongMethod,
+                        Description = "Long Method Detected",
+                        LineNumber = line.Length,
+                        Code = fileContents,
+                    };
                 }
 
                 inMethod = true;
@@ -49,11 +58,22 @@ internal class LongMethodDetector(
             {
                 if (inMethod && methodLineCount >= methodLineCountThreshold)
                 {
-                    this.logger.LogWarning("Long Method Detected");
+                    this.logger.LogWarning("Long Method Detected.");
+
+                    return new CodeSmell
+                    {
+                        Type = CodeSmellType.LongMethod,
+                        Description = "Long Method Detected",
+                        LineNumber = line.Length,
+                        Code = fileContents,
+                    };
                 }
 
                 inMethod = false;
             }
         }
+
+        this.logger.LogInformation("Long Method Not Detected.");
+        return null;
     }
 }
