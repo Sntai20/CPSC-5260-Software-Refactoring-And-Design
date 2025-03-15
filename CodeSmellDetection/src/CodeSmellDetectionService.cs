@@ -39,6 +39,12 @@ internal class CodeSmellDetectionService(
 
         this.logger.LogInformation($"Detected {codeSmells.Count} code smells in the provided code file {pathToCodeFile}.");
 
+        string fileName = Path.GetFileName(pathToCodeFile);
+        foreach (var smell in codeSmells)
+        {
+            smell.FileName = fileName;
+        }
+
         return codeSmells;
     }
 }
