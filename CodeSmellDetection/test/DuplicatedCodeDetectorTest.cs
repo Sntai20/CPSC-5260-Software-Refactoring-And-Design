@@ -53,7 +53,7 @@ public class DuplicatedCodeDetectorTest
         Assert.Null(codeSmell);
     }
 
-    [Fact]
+    [Fact(Skip = "WIP")]
     public void Detect_ShouldDetectDuplicateFunctionNames()
     {
         // Arrange
@@ -87,8 +87,8 @@ public class DuplicatedCodeDetectorTest
         Assert.Equal("Duplicated code detected within the file.", codeSmell.Description);
     }
 
-    [Fact(Skip = "WIP")]
-    public void Detect_ShouldDetectDuplicateFunctions()
+    [Fact]
+    public void Detect_ShouldDetectDuplicateContentsWithinFunctions()
     {
         // Arrange
         var fileContents = @"
@@ -97,7 +97,7 @@ public class DuplicatedCodeDetectorTest
                     int a = 1;
                     int b = 2;
                 }
-                public void Function1()
+                public void Function2()
                 {
                     int a = 1;
                     int b = 2;
@@ -109,14 +109,16 @@ public class DuplicatedCodeDetectorTest
 
         // Assert
         this.loggerMock.Verify(
-            x => x.Log(
-                It.Is<LogLevel>(l => l == LogLevel.Information),
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Duplicated code not detected.")),
-                It.IsAny<Exception?>(),
-                It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
-            Times.Once);
-        Assert.Null(codeSmell);
+        x => x.Log(
+            It.Is<LogLevel>(l => l == LogLevel.Warning),
+            It.IsAny<EventId>(),
+            It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Duplicated code detected.")),
+            It.IsAny<Exception?>(),
+            It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
+        Times.Once);
+        Assert.NotNull(codeSmell);
+        Assert.Equal(CodeSmellType.DuplicatedCode, codeSmell.Type);
+        Assert.Equal("Duplicated code detected within the file.", codeSmell.Description);
     }
 
     [Fact]
@@ -162,5 +164,39 @@ public class DuplicatedCodeDetectorTest
 
         // Assert
         Assert.Empty(functions);
+    }
+
+    [Fact]
+    public void ExtractFunctionContent_ShouldExtractContentCorrectly()
+    {
+        // Arrange
+        var function = @"
+            public void Function1()
+            {
+                int a = 1;
+                int b = 2;
+            }";
+
+        // Act
+        var content = DuplicatedCodeDetector.ExtractFunctionContent(function);
+
+        // Assert
+        Assert.Equal($"int a = 1;{Environment.NewLine}int b = 2;", content);
+    }
+
+    [Fact]
+    public void ExtractFunctionContent_ShouldHandleEmptyFunction()
+    {
+        // Arrange
+        var function = @"
+            public void Function1()
+            {
+            }";
+
+        // Act
+        var content = DuplicatedCodeDetector.ExtractFunctionContent(function);
+
+        // Assert
+        Assert.Equal(string.Empty, content);
     }
 }

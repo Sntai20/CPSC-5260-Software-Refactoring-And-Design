@@ -27,36 +27,21 @@ internal class DuplicatedCodeDetector(
     public CodeSmell Detect(string fileContents)
     {
         var functions = ExtractFunctions(fileContents);
-        var functionSets = new List<HashSet<string>>();
+        var functionContents = new List<string>();
 
         foreach (var function in functions)
         {
-            var words = function.Split(Separator, StringSplitOptions.RemoveEmptyEntries);
-            functionSets.Add(new HashSet<string>(words));
+            var content = ExtractFunctionContent(function);
+            functionContents.Add(content);
         }
 
-        for (int i = 0; i < functionSets.Count; i++)
+        for (int i = 0; i < functionContents.Count; i++)
         {
-            var currentSet = functionSets[i];
-            for (int j = i + 1; j < functionSets.Count; j++)
+            var currentContent = functionContents[i];
+            for (int j = i + 1; j < functionContents.Count; j++)
             {
-                var comparisonSet = functionSets[j];
-                var intersectionCount = 0;
-                var unionCount = currentSet.Count;
-
-                foreach (var word in comparisonSet)
-                {
-                    if (currentSet.Contains(word))
-                    {
-                        intersectionCount++;
-                    }
-                    else
-                    {
-                        unionCount++;
-                    }
-                }
-
-                double jaccardSimilarity = (double)intersectionCount / unionCount;
+                var comparisonContent = functionContents[j];
+                var jaccardSimilarity = CalculateJaccardSimilarity(currentContent, comparisonContent);
 
                 if (jaccardSimilarity >= this.options.Value.JaccardThreshold)
                 {
@@ -90,5 +75,28 @@ internal class DuplicatedCodeDetector(
         }
 
         return functions;
+    }
+
+    internal static string ExtractFunctionContent(string function)
+    {
+        var startIndex = function.IndexOf('{') + 1;
+        var endIndex = function.LastIndexOf('}');
+        var content = function.Substring(startIndex, endIndex - startIndex).Trim();
+
+        // Normalize indentation
+        var lines = content.Split([Environment.NewLine], StringSplitOptions.None);
+        var trimmedLines = lines.Select(line => line.TrimStart());
+        return string.Join(Environment.NewLine, trimmedLines);
+    }
+
+    internal static double CalculateJaccardSimilarity(string content1, string content2)
+    {
+        var words1 = new HashSet<string>(content1.Split(Separator, StringSplitOptions.RemoveEmptyEntries));
+        var words2 = new HashSet<string>(content2.Split(Separator, StringSplitOptions.RemoveEmptyEntries));
+
+        var intersectionCount = words1.Intersect(words2).Count();
+        var unionCount = words1.Union(words2).Count();
+
+        return (double)intersectionCount / unionCount;
     }
 }
