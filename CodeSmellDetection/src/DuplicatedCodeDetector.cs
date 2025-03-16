@@ -70,7 +70,32 @@ internal class DuplicatedCodeDetector(
 
         foreach (Match match in matches)
         {
-            functions.Add(match.Value.Trim());
+            var startIndex = match.Index;
+            var braceCount = 0;
+            var endIndex = startIndex;
+
+            for (int i = startIndex; i < fileContents.Length; i++)
+            {
+                if (fileContents[i] == '{')
+                {
+                    braceCount++;
+                }
+                else if (fileContents[i] == '}')
+                {
+                    braceCount--;
+                    if (braceCount == 0)
+                    {
+                        endIndex = i;
+                        break;
+                    }
+                }
+            }
+
+            if (braceCount == 0)
+            {
+                var function = fileContents.Substring(startIndex, endIndex - startIndex + 1);
+                functions.Add(function);
+            }
         }
 
         return functions;
@@ -80,10 +105,16 @@ internal class DuplicatedCodeDetector(
     {
         var startIndex = function.IndexOf('{') + 1;
         var endIndex = function.LastIndexOf('}');
+
+        if (startIndex == 0 || endIndex == -1 || endIndex < startIndex)
+        {
+            throw new ArgumentException("The function string does not contain valid '{' and '}' characters.");
+        }
+
         var content = function.Substring(startIndex, endIndex - startIndex).Trim();
 
-        // Normalize indentation
-        var lines = content.Split([Environment.NewLine], StringSplitOptions.None);
+        // Normalize indentation.
+        var lines = content.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
         var trimmedLines = lines.Select(line => line.TrimStart());
         return string.Join(Environment.NewLine, trimmedLines);
     }
