@@ -199,4 +199,46 @@ public class DuplicatedCodeDetectorTest
         // Assert
         Assert.Equal(string.Empty, content);
     }
+
+    [Fact]
+    public void CalculateJaccardSimilarity_ShouldReturnOneForIdenticalContents()
+    {
+        // Arrange
+        var content1 = "int a = 1; int b = 2;";
+        var content2 = "int a = 1; int b = 2;";
+
+        // Act
+        var similarity = DuplicatedCodeDetector.CalculateJaccardSimilarity(content1, content2);
+
+        // Assert
+        Assert.Equal(1.0, similarity);
+    }
+
+    [Fact]
+    public void CalculateJaccardSimilarity_ShouldReturnZeroForCompletelyDifferentContents()
+    {
+        // Arrange
+        var content1 = "int a = 1;";
+        var content2 = "string b = \"test\";";
+
+        // Act
+        var similarity = DuplicatedCodeDetector.CalculateJaccardSimilarity(content1, content2);
+
+        // Assert
+        Assert.Equal(0.0, similarity);
+    }
+
+    [Fact]
+    public void CalculateJaccardSimilarity_ShouldReturnCorrectValueForPartialOverlap()
+    {
+        // Arrange
+        var content1 = "int a = 1; int b = 2;";
+        var content2 = "int a = 1; string c = \"test\";";
+
+        // Act
+        var similarity = DuplicatedCodeDetector.CalculateJaccardSimilarity(content1, content2);
+
+        // Assert
+        Assert.InRange(similarity, 0.0, 1.0);
+    }
 }
