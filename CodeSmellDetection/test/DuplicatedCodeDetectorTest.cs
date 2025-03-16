@@ -11,7 +11,7 @@ using Xunit;
 public class DuplicatedCodeDetectorTest
 {
     [Fact]
-    public void DetectDuplicatedCode_ShouldDetectDuplicatedLines()
+    public void Detect_ShouldDetectDuplicatedLines()
     {
         // Arrange
         var optionsMock = new Mock<IOptions<DuplicatedCodeDetectorOptions>>();
@@ -46,7 +46,7 @@ public class DuplicatedCodeDetectorTest
     }
 
     [Fact]
-    public void DetectDuplicatedCode_ShouldNotDetectDuplicatedLines()
+    public void Detect_ShouldNotDetectDuplicatedLines()
     {
         // Arrange
         var optionsMock = new Mock<IOptions<DuplicatedCodeDetectorOptions>>();
