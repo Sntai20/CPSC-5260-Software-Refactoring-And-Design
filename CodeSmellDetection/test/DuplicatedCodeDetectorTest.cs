@@ -83,7 +83,7 @@ public class DuplicatedCodeDetectorTest
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
             Times.Once);
         Assert.NotNull(codeSmell);
-        Assert.True(codeSmell.Type == CodeSmellType.DuplicatedCode);
+        Assert.Equal(CodeSmellType.DuplicatedCode, codeSmell.Type);
         Assert.Equal("Duplicated code detected within the file.", codeSmell.Description);
     }
 
