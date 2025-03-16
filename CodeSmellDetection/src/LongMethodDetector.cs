@@ -15,8 +15,9 @@ internal class LongMethodDetector(
     private readonly IOptions<LongMethodDetectorOptions> options = options;
     private readonly ILogger<LongMethodDetector> logger = logger;
 
-    public CodeSmell Detect(string fileContents)
+    public List<CodeSmell> Detect(string fileContents)
     {
+        var codeSmells = new List<CodeSmell>();
         int methodLineCount = 0;
         int currentLineNumber = 0;
         int methodStartLine = 0;
@@ -33,7 +34,7 @@ internal class LongMethodDetector(
                 if (inMethod && methodLineCount >= methodLineCountThreshold)
                 {
                     this.logger.LogInformation("Long Method Detected.");
-                    return CreateCodeSmell(fileContents, methodStartLine, currentLineNumber);
+                    codeSmells.Add(CreateCodeSmell(fileContents, methodStartLine, currentLineNumber));
                 }
 
                 inMethod = true;
@@ -51,15 +52,19 @@ internal class LongMethodDetector(
                 if (inMethod && methodLineCount >= methodLineCountThreshold)
                 {
                     this.logger.LogWarning("Long Method Detected.");
-                    return CreateCodeSmell(fileContents, methodStartLine, currentLineNumber);
+                    codeSmells.Add(CreateCodeSmell(fileContents, methodStartLine, currentLineNumber));
                 }
 
                 inMethod = false;
             }
         }
 
-        this.logger.LogInformation("Long Method Not Detected.");
-        return null;
+        if (codeSmells.Count == 0)
+        {
+            this.logger.LogInformation("Long Method Not Detected.");
+        }
+
+        return codeSmells;
     }
 
     private static bool IsMethodDeclaration(string line)

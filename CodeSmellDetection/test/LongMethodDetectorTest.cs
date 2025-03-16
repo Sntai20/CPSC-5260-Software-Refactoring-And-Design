@@ -59,7 +59,7 @@ public class LongMethodDetectorTest
             }";
 
         // Act
-        var codeSmell = this.detector.Detect(fileContents);
+        var codeSmells = this.detector.Detect(fileContents);
 
         // Assert
         this.loggerMock.Verify(
@@ -70,8 +70,8 @@ public class LongMethodDetectorTest
                 It.IsAny<Exception?>(),
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
             Times.Once);
-        Assert.NotEmpty(codeSmell.Code);
-        Assert.Equal(9, codeSmell.StartLine);
+        Assert.NotEmpty(codeSmells[0].Code);
+        Assert.Equal(9, codeSmells[0].StartLine);
     }
 
     [Fact]
@@ -91,7 +91,7 @@ public class LongMethodDetectorTest
             }";
 
         // Act
-        var codeSmell = this.detector.Detect(fileContents);
+        var codeSmells = this.detector.Detect(fileContents);
 
         // Assert
         this.loggerMock.Verify(
@@ -102,7 +102,7 @@ public class LongMethodDetectorTest
                 It.IsAny<Exception?>(),
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
             Times.Once);
-        Assert.Null(codeSmell);
+        Assert.Empty(codeSmells);
     }
 
     [Fact]
@@ -141,7 +141,7 @@ public class LongMethodDetectorTest
             }";
 
         // Act
-        var codeSmell = this.detector.Detect(fileContents);
+        var codeSmells = this.detector.Detect(fileContents);
 
         // Assert
         this.loggerMock.Verify(
@@ -152,7 +152,7 @@ public class LongMethodDetectorTest
                 It.IsAny<Exception?>(),
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
             Times.Once);
-        Assert.NotEmpty(codeSmell.Code);
-        Assert.Equal(9, codeSmell.StartLine);
+        Assert.NotEmpty(codeSmells[0].Code);
+        Assert.Equal(9, codeSmells[0].StartLine);
     }
 }
