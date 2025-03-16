@@ -15,7 +15,6 @@ internal class DuplicatedCodeDetector(
     IOptions<DuplicatedCodeDetectorOptions> options,
     ILogger<DuplicatedCodeDetector> logger)
 {
-    private static readonly char[] Separator = [' ', '\t', '(', ')', '{', '}', ';', ','];
     private readonly IOptions<DuplicatedCodeDetectorOptions> options = options;
     private readonly ILogger<DuplicatedCodeDetector> logger = logger;
 
@@ -91,12 +90,22 @@ internal class DuplicatedCodeDetector(
 
     internal static double CalculateJaccardSimilarity(string content1, string content2)
     {
-        var words1 = new HashSet<string>(content1.Split(Separator, StringSplitOptions.RemoveEmptyEntries));
-        var words2 = new HashSet<string>(content2.Split(Separator, StringSplitOptions.RemoveEmptyEntries));
+        var separators = new char[] { ' ', '\t', '(', ')', '{', '}', ';', ',', '.', '\n', '\r', '\f', '\v', '[', ']', '<', '>', ':', '"', '\'' };
+        var words1 = new HashSet<string>(content1.Split(
+            separators,
+            StringSplitOptions.RemoveEmptyEntries));
+        var words2 = new HashSet<string>(content2.Split(
+            separators,
+            StringSplitOptions.RemoveEmptyEntries));
+
+        // Remove common programming keywords and symbols that should not affect similarity.
+        var commonKeywords = new HashSet<string> { "int", "string", "=" };
+        words1.ExceptWith(commonKeywords);
+        words2.ExceptWith(commonKeywords);
 
         var intersectionCount = words1.Intersect(words2).Count();
         var unionCount = words1.Union(words2).Count();
 
-        return (double)intersectionCount / unionCount;
+        return unionCount == 0 ? 0.0 : (double)intersectionCount / unionCount;
     }
 }
