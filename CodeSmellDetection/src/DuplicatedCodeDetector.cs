@@ -2,6 +2,7 @@ namespace CodeSmellDetection;
 
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using CodeSmellDetection.Models;
 using CodeSmellDetection.Options;
 using Microsoft.Extensions.Logging;
@@ -25,31 +26,41 @@ internal class DuplicatedCodeDetector(
     /// <returns>A <see cref="CodeSmell"/> object if duplicated code is detected; otherwise, <c>null</c>.</returns>
     public CodeSmell Detect(string fileContents)
     {
-        var lineSets = new List<HashSet<string>>();
+        var functions = ExtractFunctions(fileContents);
+        var functionSets = new List<HashSet<string>>();
 
-        foreach (var line in fileContents.Split(Environment.NewLine))
+        foreach (var function in functions)
         {
-            var words = line.Split(
-                Separator,
-                StringSplitOptions.RemoveEmptyEntries);
-            lineSets.Add(new HashSet<string>(words));
+            var words = function.Split(Separator, StringSplitOptions.RemoveEmptyEntries);
+            functionSets.Add(new HashSet<string>(words));
         }
 
-        for (int i = 0; i < lineSets.Count; i++)
+        for (int i = 0; i < functionSets.Count; i++)
         {
-            for (int j = i + 1; j < lineSets.Count; j++)
+            var currentSet = functionSets[i];
+            for (int j = i + 1; j < functionSets.Count; j++)
             {
-                var intersection = new HashSet<string>(lineSets[i]);
-                intersection.IntersectWith(lineSets[j]);
+                var comparisonSet = functionSets[j];
+                var intersectionCount = 0;
+                var unionCount = currentSet.Count;
 
-                var union = new HashSet<string>(lineSets[i]);
-                union.UnionWith(lineSets[j]);
+                foreach (var word in comparisonSet)
+                {
+                    if (currentSet.Contains(word))
+                    {
+                        intersectionCount++;
+                    }
+                    else
+                    {
+                        unionCount++;
+                    }
+                }
 
-                double jaccardSimilarity = (double)intersection.Count / union.Count;
+                double jaccardSimilarity = (double)intersectionCount / unionCount;
 
                 if (jaccardSimilarity >= this.options.Value.JaccardThreshold)
                 {
-                    this.logger.LogWarning($"Duplicated code detected between lines {i + 1} and {j + 1} with Jaccard similarity {jaccardSimilarity}");
+                    this.logger.LogWarning($"Duplicated code detected between functions {i + 1} and {j + 1} with Jaccard similarity {jaccardSimilarity}");
                     return new CodeSmell
                     {
                         Type = CodeSmellType.DuplicatedCode,
@@ -65,5 +76,19 @@ internal class DuplicatedCodeDetector(
 
         this.logger.LogInformation("Duplicated code not detected.");
         return null;
+    }
+
+    internal static List<string> ExtractFunctions(string fileContents)
+    {
+        var functions = new List<string>();
+        var functionPattern = @"(public|private|protected|internal|static|async)?\s*(void|int|string|bool|Task|List<.*?>|Dictionary<.*?>|IEnumerable<.*?>|IList<.*?>|IDictionary<.*?>|ICollection<.*?>|IReadOnlyList<.*?>|IReadOnlyDictionary<.*?>|IReadOnlyCollection<.*?>|IQueryable<.*?>|IAsyncEnumerable<.*?>|IAsyncEnumerator<.*?>|IAsyncDisposable<.*?>)?\s+\w+\s*\(.*?\)\s*{";
+        var matches = Regex.Matches(fileContents, functionPattern, RegexOptions.Singleline);
+
+        foreach (Match match in matches)
+        {
+            functions.Add(match.Value.Trim());
+        }
+
+        return functions;
     }
 }
