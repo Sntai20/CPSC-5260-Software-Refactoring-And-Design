@@ -2,6 +2,7 @@ namespace CodeSmellDetectionTest;
 
 using System;
 using CodeSmellDetection;
+using CodeSmellDetection.Models;
 using CodeSmellDetection.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -17,39 +18,13 @@ public class DuplicatedCodeDetectorTest
     public DuplicatedCodeDetectorTest()
     {
         this.optionsMock = new Mock<IOptions<DuplicatedCodeDetectorOptions>>();
+        _ = this.optionsMock
+            .Setup(x => x.Value)
+            .Returns(new DuplicatedCodeDetectorOptions { JaccardThreshold = 0.75 });
         this.loggerMock = new Mock<ILogger<DuplicatedCodeDetector>>();
         this.detector = new DuplicatedCodeDetector(
             this.optionsMock.Object,
             this.loggerMock.Object);
-
-        _ = this.optionsMock.Setup(x => x.Value)
-                       .Returns(new DuplicatedCodeDetectorOptions { JaccardThreshold = 0.75 });
-    }
-
-    [Fact]
-    public void Detect_ShouldDetectDuplicatedLines()
-    {
-        // Arrange
-        var fileContents = @"
-                int a = 1;
-                int b = 2;
-                int a = 1;
-                int c = 3;
-            ";
-
-        // Act
-        var codeSmell = this.detector.Detect(fileContents);
-
-        // Assert
-        this.loggerMock.Verify(
-            x => x.Log(
-                It.Is<LogLevel>(l => l == LogLevel.Warning),
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Duplicated code detected between lines 2 and 4")),
-                It.IsAny<Exception?>(),
-                It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
-            Times.Once);
-        Assert.NotEmpty(codeSmell.Code);
     }
 
     [Fact]
@@ -76,5 +51,116 @@ public class DuplicatedCodeDetectorTest
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
             Times.Once);
         Assert.Null(codeSmell);
+    }
+
+    [Fact]
+    public void Detect_ShouldDetectDuplicateFunctionNames()
+    {
+        // Arrange
+        var fileContents = @"
+                public void Function1()
+                {
+                    int a = 1;
+                    int b = 2;
+                }
+                public void Function1()
+                {
+                    int a = 1;
+                    int b = 2;
+                }
+            ";
+
+        // Act
+        var codeSmell = this.detector.Detect(fileContents);
+
+        // Assert
+        this.loggerMock.Verify(
+            x => x.Log(
+                It.Is<LogLevel>(l => l == LogLevel.Warning),
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Duplicated code detected between functions 1 and 2 with Jaccard similarity 1.")),
+                It.IsAny<Exception?>(),
+                It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
+            Times.Once);
+        Assert.NotNull(codeSmell);
+        Assert.True(codeSmell.Type == CodeSmellType.DuplicatedCode);
+        Assert.Equal("Duplicated code detected within the file.", codeSmell.Description);
+    }
+
+    [Fact(Skip = "WIP")]
+    public void Detect_ShouldDetectDuplicateFunctions()
+    {
+        // Arrange
+        var fileContents = @"
+                public void Function1()
+                {
+                    int a = 1;
+                    int b = 2;
+                }
+                public void Function1()
+                {
+                    int a = 1;
+                    int b = 2;
+                }
+            ";
+
+        // Act
+        var codeSmell = this.detector.Detect(fileContents);
+
+        // Assert
+        this.loggerMock.Verify(
+            x => x.Log(
+                It.Is<LogLevel>(l => l == LogLevel.Information),
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Duplicated code not detected.")),
+                It.IsAny<Exception?>(),
+                It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
+            Times.Once);
+        Assert.Null(codeSmell);
+    }
+
+    [Fact]
+    public void ExtractFunctions_ShouldExtractFunctionsCorrectly()
+    {
+        // Arrange
+        var fileContents = @"
+                public void Function1()
+                {
+                    int a = 1;
+                }
+                private int Function2()
+                {
+                    return 2;
+                }
+                protected string Function3()
+                {
+                    return ""test"";
+                }
+            ";
+
+        // Act
+        var functions = DuplicatedCodeDetector.ExtractFunctions(fileContents);
+
+        // Assert
+        Assert.Equal(3, functions.Count);
+        Assert.Contains("public void Function1()", functions[0]);
+        Assert.Contains("private int Function2()", functions[1]);
+        Assert.Contains("protected string Function3()", functions[2]);
+    }
+
+    [Fact]
+    public void ExtractFunctions_ShouldReturnEmptyListWhenNoFunctions()
+    {
+        // Arrange
+        var fileContents = @"
+                int a = 1;
+                int b = 2;
+            ";
+
+        // Act
+        var functions = DuplicatedCodeDetector.ExtractFunctions(fileContents);
+
+        // Assert
+        Assert.Empty(functions);
     }
 }
