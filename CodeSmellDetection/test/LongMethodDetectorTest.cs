@@ -9,19 +9,26 @@ using Xunit;
 
 public class LongMethodDetectorTest
 {
+    private readonly Mock<IOptions<LongMethodDetectorOptions>> optionsMock;
+    private readonly Mock<ILogger<LongMethodDetector>> loggerMock;
+    private readonly LongMethodDetector detector;
+
+    public LongMethodDetectorTest()
+    {
+        this.optionsMock = new Mock<IOptions<LongMethodDetectorOptions>>();
+        this.loggerMock = new Mock<ILogger<LongMethodDetector>>();
+        this.detector = new LongMethodDetector(
+            this.optionsMock.Object,
+            this.loggerMock.Object);
+
+        _ = this.optionsMock.Setup(x => x.Value)
+                       .Returns(new LongMethodDetectorOptions { MethodLineCountThreshold = 15 });
+    }
+
     [Fact]
-    public void DetectLongMethods_LongMethodDetected_LogsInformation()
+    public void Detect_LongMethodDetected_LogsInformation()
     {
         // Arrange
-        var optionsMock = new Mock<IOptions<LongMethodDetectorOptions>>();
-        var loggerMock = new Mock<ILogger<LongMethodDetector>>();
-        var detector = new LongMethodDetector(
-            optionsMock.Object,
-            loggerMock.Object);
-
-        _ = optionsMock.Setup(x => x.Value)
-                       .Returns(new LongMethodDetectorOptions { MethodLineCountThreshold = 15 });
-
         string fileContents = @"
             public class TestClass
             {
@@ -40,23 +47,22 @@ public class LongMethodDetectorTest
                     // Line 5
                     // Line 6
                     // Line 7
-                    // Line 8
-                    // Line 9
-                    // Line 10
-                    // Line 11
-                    // Line 12
-                    // Line 13
-                    // Line 14
-                    // Line 15
-                    // Line 16
+                    int n = 10;
+                    for (int i = 0; i < n; i++)
+                    {
+                        if (i == 1)
+                        {
+                            Console.WriteLine($""{n}, "");
+                        }
+                    }
                 }
             }";
 
         // Act
-        var codeSmell = detector.Detect(fileContents);
+        var codeSmell = this.detector.Detect(fileContents);
 
         // Assert
-        loggerMock.Verify(
+        this.loggerMock.Verify(
             x => x.Log(
                 It.Is<LogLevel>(l => l == LogLevel.Warning),
                 It.IsAny<EventId>(),
@@ -69,18 +75,9 @@ public class LongMethodDetectorTest
     }
 
     [Fact]
-    public void DetectLongMethods_NoLongMethodDetected_LogsInformation()
+    public void Detect_NoLongMethodDetected_LogsInformation()
     {
         // Arrange
-        var optionsMock = new Mock<IOptions<LongMethodDetectorOptions>>();
-        var loggerMock = new Mock<ILogger<LongMethodDetector>>();
-        var detector = new LongMethodDetector(
-            optionsMock.Object,
-            loggerMock.Object);
-
-        _ = optionsMock.Setup(x => x.Value)
-                       .Returns(new LongMethodDetectorOptions { MethodLineCountThreshold = 15 });
-
         string fileContents = @"
             public class TestClass
             {
@@ -94,10 +91,10 @@ public class LongMethodDetectorTest
             }";
 
         // Act
-        var codeSmell = detector.Detect(fileContents);
+        var codeSmell = this.detector.Detect(fileContents);
 
         // Assert
-        loggerMock.Verify(
+        this.loggerMock.Verify(
             x => x.Log(
                 It.Is<LogLevel>(l => l == LogLevel.Information),
                 It.IsAny<EventId>(),
@@ -106,5 +103,56 @@ public class LongMethodDetectorTest
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
             Times.Once);
         Assert.Null(codeSmell);
+    }
+
+    [Fact]
+    public void Detect_LongMethodDetected_BlankLineIgnored()
+    {
+        // Arrange
+        string fileContents = @"
+            public class TestClass
+            {
+                public void ShortMethod()
+                {
+                    // short method
+                }
+
+                public void LongMethod()
+                {
+                    // long method
+                    // Line 1
+
+                    // Line 2
+
+                    // Line 3
+                    // Line 4
+                    // Line 5
+                    // Line 6
+                    // Line 7
+                    int n = 10;
+                    for (int i = 0; i < n; i++)
+                    {
+                        if (i == 1)
+                        {
+                            Console.WriteLine($""{n}, "");
+                        }
+                    }
+                }
+            }";
+
+        // Act
+        var codeSmell = this.detector.Detect(fileContents);
+
+        // Assert
+        this.loggerMock.Verify(
+            x => x.Log(
+                It.Is<LogLevel>(l => l == LogLevel.Warning),
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Long Method Detected.")),
+                It.IsAny<Exception?>(),
+                It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
+            Times.Once);
+        Assert.NotEmpty(codeSmell.Code);
+        Assert.Equal(9, codeSmell.StartLine);
     }
 }
