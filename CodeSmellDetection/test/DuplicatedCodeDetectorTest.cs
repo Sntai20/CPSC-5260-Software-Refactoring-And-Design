@@ -53,7 +53,7 @@ public class DuplicatedCodeDetectorTest
         Assert.Null(codeSmell);
     }
 
-    [Fact(Skip = "WIP")]
+    [Fact]
     public void Detect_ShouldDetectDuplicateFunctionNames()
     {
         // Arrange
@@ -78,13 +78,13 @@ public class DuplicatedCodeDetectorTest
             x => x.Log(
                 It.Is<LogLevel>(l => l == LogLevel.Warning),
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Duplicated code detected between functions 1 and 2 with Jaccard similarity 1.")),
+                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Duplicate function name detected: Function1.")),
                 It.IsAny<Exception?>(),
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
             Times.Once);
         Assert.NotNull(codeSmell);
         Assert.Equal(CodeSmellType.DuplicatedCode, codeSmell.Type);
-        Assert.Equal("Duplicated code detected within the file.", codeSmell.Description);
+        Assert.Equal("Duplicate function name detected: Function1.", codeSmell.Description);
     }
 
     [Fact]
