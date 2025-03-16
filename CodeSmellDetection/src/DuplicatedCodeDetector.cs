@@ -27,11 +27,24 @@ internal class DuplicatedCodeDetector(
     {
         var functions = ExtractFunctions(fileContents);
         var functionContents = new List<string>();
+        var functionNames = new HashSet<string>();
 
         foreach (var function in functions)
         {
             var content = ExtractFunctionContent(function);
             functionContents.Add(content);
+
+            var functionName = ExtractFunctionName(function);
+            if (!functionNames.Add(functionName))
+            {
+                this.logger.LogWarning($"Duplicate function name detected: {functionName}.");
+                return new CodeSmell
+                {
+                    Type = CodeSmellType.DuplicatedCode,
+                    Description = $"Duplicate function name detected: {functionName}.",
+                    Code = fileContents,
+                };
+            }
         }
 
         for (int i = 0; i < functionContents.Count; i++)
@@ -129,6 +142,27 @@ internal class DuplicatedCodeDetector(
         var lines = content.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
         var trimmedLines = lines.Select(line => line.TrimStart());
         return string.Join(Environment.NewLine, trimmedLines);
+    }
+
+    /// <summary>
+    /// Extracts the name of a function from the function string.
+    /// </summary>
+    /// <param name="function">The function string to extract the name from.</param>
+    /// <returns>The name of the function as a string.</returns>
+    internal static string ExtractFunctionName(string function)
+    {
+        var match = Regex.Match(function, @"\b\w+\s*\(.*?\)\s*{");
+        if (match.Success)
+        {
+            var functionSignature = match.Value;
+            var nameMatch = Regex.Match(functionSignature, @"\b\w+\b");
+            if (nameMatch.Success)
+            {
+                return nameMatch.Value;
+            }
+        }
+
+        throw new ArgumentException("The function string does not contain a valid function name.");
     }
 
     /// <summary>
