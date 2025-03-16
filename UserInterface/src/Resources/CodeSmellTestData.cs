@@ -7,6 +7,37 @@ internal class CodeSmellTestData
     int a = 1;
     int c = 3;
 
+    public void Function1()
+    {
+        int a = 1;
+        int b = 2;
+    }
+
+    public void Function1()
+    {
+        int a = 1;
+        int b = 2;
+    }
+
+    public void Function2()
+    {
+        int a = 1;
+        int b = 2;
+    }
+
+    public void Function3()
+    {
+        int a = 1;
+    }
+    private int Function4()
+    {
+        return 2;
+    }
+    protected string Function5()
+    {
+        return "test";
+    }
+
     public void ShortMethod()
     {
         // short method
