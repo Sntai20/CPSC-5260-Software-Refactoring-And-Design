@@ -23,8 +23,9 @@ internal class DuplicatedCodeDetector(
     /// </summary>
     /// <param name="fileContents">The contents of the file to analyze for duplicated code.</param>
     /// <returns>A <see cref="CodeSmell"/> object if duplicated code is detected; otherwise, <c>null</c>.</returns>
-    public CodeSmell Detect(string fileContents)
+    public List<CodeSmell> Detect(string fileContents)
     {
+        var codeSmells = new List<CodeSmell>();
         var functions = ExtractFunctions(fileContents);
         var functionContents = new List<string>();
         var functionNames = new HashSet<string>();
@@ -38,12 +39,12 @@ internal class DuplicatedCodeDetector(
             if (!functionNames.Add(functionName))
             {
                 this.logger.LogWarning($"Duplicate function name detected: {functionName}.");
-                return new CodeSmell
+                codeSmells.Add(new CodeSmell
                 {
                     Type = CodeSmellType.DuplicatedCode,
                     Description = $"Duplicate function name detected: {functionName}.",
                     Code = fileContents,
-                };
+                });
             }
         }
 
@@ -58,21 +59,25 @@ internal class DuplicatedCodeDetector(
                 if (jaccardSimilarity >= this.options.Value.JaccardThreshold)
                 {
                     this.logger.LogWarning($"Duplicated code detected between functions {i + 1} and {j + 1} with Jaccard similarity {jaccardSimilarity}.");
-                    return new CodeSmell
+                    codeSmells.Add(new CodeSmell
                     {
                         Type = CodeSmellType.DuplicatedCode,
-                        Description = "Duplicated code detected within the file.",
+                        Description = $"Duplicated code detected between functions {i + 1} and {j + 1} with Jaccard similarity {jaccardSimilarity}.",
                         LineNumber = i + 1,
                         StartLine = i + 1,
                         EndLine = j + 1,
                         Code = fileContents,
-                    };
+                    });
                 }
             }
         }
 
-        this.logger.LogInformation("Duplicated code not detected.");
-        return null;
+        if (codeSmells.Count == 0)
+        {
+            this.logger.LogInformation("Duplicated code not detected.");
+        }
+
+        return codeSmells;
     }
 
     /// <summary>

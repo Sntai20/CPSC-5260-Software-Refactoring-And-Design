@@ -50,7 +50,7 @@ public class DuplicatedCodeDetectorTest
                 It.IsAny<Exception?>(),
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
             Times.Once);
-        Assert.Null(codeSmell);
+        Assert.Empty(codeSmell);
     }
 
     [Fact]
@@ -71,7 +71,7 @@ public class DuplicatedCodeDetectorTest
             ";
 
         // Act
-        var codeSmell = this.detector.Detect(fileContents);
+        var codeSmells = this.detector.Detect(fileContents);
 
         // Assert
         this.loggerMock.Verify(
@@ -82,9 +82,9 @@ public class DuplicatedCodeDetectorTest
                 It.IsAny<Exception?>(),
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
             Times.Once);
-        Assert.NotNull(codeSmell);
-        Assert.Equal(CodeSmellType.DuplicatedCode, codeSmell.Type);
-        Assert.Equal("Duplicate function name detected: Function1.", codeSmell.Description);
+        Assert.NotNull(codeSmells);
+        Assert.Equal(CodeSmellType.DuplicatedCode, codeSmells[0].Type);
+        Assert.Equal("Duplicate function name detected: Function1.", codeSmells[0].Description);
     }
 
     [Fact]
@@ -105,7 +105,7 @@ public class DuplicatedCodeDetectorTest
             ";
 
         // Act
-        var codeSmell = this.detector.Detect(fileContents);
+        var codeSmells = this.detector.Detect(fileContents);
 
         // Assert
         this.loggerMock.Verify(
@@ -116,9 +116,9 @@ public class DuplicatedCodeDetectorTest
             It.IsAny<Exception?>(),
             It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
         Times.Once);
-        Assert.NotNull(codeSmell);
-        Assert.Equal(CodeSmellType.DuplicatedCode, codeSmell.Type);
-        Assert.Equal("Duplicated code detected within the file.", codeSmell.Description);
+        Assert.NotNull(codeSmells);
+        Assert.Equal(CodeSmellType.DuplicatedCode, codeSmells[0].Type);
+        Assert.Equal("Duplicated code detected between functions 1 and 2 with Jaccard similarity 1.", codeSmells[0].Description);
     }
 
     [Fact]
