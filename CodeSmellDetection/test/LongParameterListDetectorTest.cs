@@ -27,7 +27,7 @@ public class LongParameterListDetectorTest
     }
 
     [Fact]
-    public void DetectLongParameterLists_ShouldDetectMethodsWithLongParameterLists()
+    public void Detect_ShouldDetectMethodsWithLongParameterLists()
     {
         // Arrange
         var fileContents = @"
@@ -57,7 +57,7 @@ public class LongParameterListDetectorTest
     }
 
     [Fact]
-    public void DetectLongParameterLists_ShouldNotDetectMethodsWithShortParameterLists()
+    public void Detect_ShouldNotDetectMethodsWithShortParameterLists()
     {
         // Arrange
         var fileContents = @"
