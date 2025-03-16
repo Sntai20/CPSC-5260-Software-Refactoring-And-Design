@@ -28,7 +28,7 @@ internal class CodeSmellDetectionService(
 
         var codeSmells = new List<CodeSmell>();
 
-        var duplicatedCodeSmells = await Task.Run(() => this.duplicatedCodeDetector.Detect(fileContents));
+        List<CodeSmell>? duplicatedCodeSmells = await Task.Run(() => this.duplicatedCodeDetector.Detect(fileContents));
         codeSmells.AddRange(duplicatedCodeSmells);
 
         var longMethodSmells = await Task.Run(() => this.longMethodDetector.Detect(fileContents));
