@@ -10,19 +10,26 @@ using Xunit;
 
 public class DuplicatedCodeDetectorTest
 {
+    private readonly Mock<IOptions<DuplicatedCodeDetectorOptions>> optionsMock;
+    private readonly Mock<ILogger<DuplicatedCodeDetector>> loggerMock;
+    private readonly DuplicatedCodeDetector detector;
+
+    public DuplicatedCodeDetectorTest()
+    {
+        this.optionsMock = new Mock<IOptions<DuplicatedCodeDetectorOptions>>();
+        this.loggerMock = new Mock<ILogger<DuplicatedCodeDetector>>();
+        this.detector = new DuplicatedCodeDetector(
+            this.optionsMock.Object,
+            this.loggerMock.Object);
+
+        _ = this.optionsMock.Setup(x => x.Value)
+                       .Returns(new DuplicatedCodeDetectorOptions { JaccardThreshold = 0.75 });
+    }
+
     [Fact]
     public void Detect_ShouldDetectDuplicatedLines()
     {
         // Arrange
-        var optionsMock = new Mock<IOptions<DuplicatedCodeDetectorOptions>>();
-        var loggerMock = new Mock<ILogger<DuplicatedCodeDetector>>();
-        var detector = new DuplicatedCodeDetector(
-            optionsMock.Object,
-            loggerMock.Object);
-
-        _ = optionsMock.Setup(x => x.Value)
-                       .Returns(new DuplicatedCodeDetectorOptions { JaccardThreshold = 0.75 });
-
         var fileContents = @"
                 int a = 1;
                 int b = 2;
@@ -31,10 +38,10 @@ public class DuplicatedCodeDetectorTest
             ";
 
         // Act
-        var codeSmell = detector.Detect(fileContents);
+        var codeSmell = this.detector.Detect(fileContents);
 
         // Assert
-        loggerMock.Verify(
+        this.loggerMock.Verify(
             x => x.Log(
                 It.Is<LogLevel>(l => l == LogLevel.Warning),
                 It.IsAny<EventId>(),
@@ -49,15 +56,6 @@ public class DuplicatedCodeDetectorTest
     public void Detect_ShouldNotDetectDuplicatedLines()
     {
         // Arrange
-        var optionsMock = new Mock<IOptions<DuplicatedCodeDetectorOptions>>();
-        var loggerMock = new Mock<ILogger<DuplicatedCodeDetector>>();
-        var detector = new DuplicatedCodeDetector(
-            optionsMock.Object,
-            loggerMock.Object);
-
-        _ = optionsMock.Setup(x => x.Value)
-                       .Returns(new DuplicatedCodeDetectorOptions { JaccardThreshold = 0.75 });
-
         var fileContents = @"
                 int a = 1;
                 int b = 2;
@@ -66,10 +64,10 @@ public class DuplicatedCodeDetectorTest
             ";
 
         // Act
-        var codeSmell = detector.Detect(fileContents);
+        var codeSmell = this.detector.Detect(fileContents);
 
         // Assert
-        loggerMock.Verify(
+        this.loggerMock.Verify(
             x => x.Log(
                 It.Is<LogLevel>(l => l == LogLevel.Information),
                 It.IsAny<EventId>(),
