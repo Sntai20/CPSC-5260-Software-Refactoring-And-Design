@@ -62,6 +62,11 @@ internal class DuplicatedCodeDetector(
         return null;
     }
 
+    /// <summary>
+    /// Extracts functions from the provided file contents.
+    /// </summary>
+    /// <param name="fileContents">The contents of the file to extract functions from.</param>
+    /// <returns>A list of function strings extracted from the file contents.</returns>
     internal static List<string> ExtractFunctions(string fileContents)
     {
         var functions = new List<string>();
@@ -74,6 +79,7 @@ internal class DuplicatedCodeDetector(
             var braceCount = 0;
             var endIndex = startIndex;
 
+            // Handle nested braces when extracting function bodies.
             for (int i = startIndex; i < fileContents.Length; i++)
             {
                 if (fileContents[i] == '{')
@@ -101,6 +107,12 @@ internal class DuplicatedCodeDetector(
         return functions;
     }
 
+    /// <summary>
+    /// Extracts the content of a function, excluding the function signature and braces.
+    /// </summary>
+    /// <param name="function">The function string to extract content from.</param>
+    /// <returns>The content of the function as a string.</returns>
+    /// <exception cref="ArgumentException">Thrown when the function string does not contain valid '{' and '}' characters.</exception>
     internal static string ExtractFunctionContent(string function)
     {
         var startIndex = function.IndexOf('{') + 1;
@@ -119,6 +131,12 @@ internal class DuplicatedCodeDetector(
         return string.Join(Environment.NewLine, trimmedLines);
     }
 
+    /// <summary>
+    /// Calculates the Jaccard similarity between two strings.
+    /// </summary>
+    /// <param name="content1">The first string to compare.</param>
+    /// <param name="content2">The second string to compare.</param>
+    /// <returns>The Jaccard similarity coefficient between the two strings.</returns>
     internal static double CalculateJaccardSimilarity(string content1, string content2)
     {
         var separators = new char[] { ' ', '\t', '(', ')', '{', '}', ';', ',', '.', '\n', '\r', '\f', '\v', '[', ']', '<', '>', ':', '"', '\'' };
