@@ -16,7 +16,6 @@ internal class LongMethod(
     private readonly IOptions<LongMethodOptions> options = options;
     private readonly ILogger<LongMethod> logger = logger;
 
-    // TODO: Ignore comments from the fileContents.
     public List<CodeSmell> Detect(string fileContents)
     {
         var codeSmells = new List<CodeSmell>();
@@ -35,8 +34,7 @@ internal class LongMethod(
             {
                 if (inMethod && methodLineCount >= methodLineCountThreshold)
                 {
-                    // TODO: Improve log statement to be data dense.
-                    this.logger.LogInformation("Long Method Detected.");
+                    this.logger.LogInformation($"Long Method Detected from line {methodStartLine} to {currentLineNumber}.");
                     codeSmells.Add(CreateCodeSmell(fileContents, methodStartLine, currentLineNumber));
                 }
 
@@ -54,8 +52,7 @@ internal class LongMethod(
             {
                 if (inMethod && methodLineCount >= methodLineCountThreshold)
                 {
-                    // TODO: Improve log statement to be data dense.
-                    this.logger.LogWarning("Long Method Detected.");
+                    this.logger.LogWarning($"Long Method Detected from line {methodStartLine} to {currentLineNumber}.");
                     codeSmells.Add(CreateCodeSmell(fileContents, methodStartLine, currentLineNumber));
                 }
 
@@ -65,7 +62,7 @@ internal class LongMethod(
 
         if (codeSmells.Count == 0)
         {
-            this.logger.LogInformation("Long Method Not Detected.");
+            this.logger.LogInformation("No Long Methods Detected.");
         }
 
         return codeSmells;
@@ -85,7 +82,7 @@ internal class LongMethod(
         {
             // TODO: Improve the description.
             Type = CodeSmellType.LongMethod,
-            Description = "Long Method Detected",
+            Description = $"Long Method Detected from line {startLine} to {endLine}.",
             LineNumber = startLine,
             StartLine = startLine,
             EndLine = endLine,
