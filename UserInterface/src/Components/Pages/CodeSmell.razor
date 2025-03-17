@@ -1,12 +1,13 @@
-﻿@page "/counter"
+﻿@page "/codesmell"
 @rendermode InteractiveServer
 @inject ICodeSmellDetectionService CodeSmellDetectionService
 
-<PageTitle>Code Smell Detection Counter</PageTitle>
+<PageTitle>Code Smell Detection</PageTitle>
 
 <p role="status">Current code smell count: @currentCount</p>
-
+<br />
 <button class="btn btn-primary" @onclick="DetectCodeSmells" disabled="@isLoading">Click me</button>
+<br />
 
 @if (isLoading)
 {
@@ -18,7 +19,13 @@ else if (!string.IsNullOrEmpty(errorMessage))
 }
 else if (codeSmells != null && codeSmells.Any())
 {
-    <h2>File Name: @codeSmells.First().FileName</h2>
+    // TODO: Allow the user to upload a file through this page.
+    // TODO: If the code smell is a structural duplicate code smell, add a button to refactor.
+    // TODO: If a code refactor is produced, include the option to save to a file.
+    <p>File Name: @codeSmells.First().FileName</p>
+    <br />
+    <h3>Detected Code Smells Types</h3>
+    <p>This component demonstrates the code smell types detected.</p>
     <table class="table">
         <thead>
             <tr>
@@ -42,7 +49,9 @@ else if (codeSmells != null && codeSmells.Any())
 
 @if (codeSmells != null && codeSmells.Any())
 {
+    <br />
     <h3>File Content</h3>
+    <p>This component demonstrates the file contents being analyzed for code smells. Line numbers have been added for readability.</p>
     <pre style="background-color: lightgray;">@GetCodeWithLineNumbers(codeSmells.First().Code)</pre>
     <style>
         pre {
@@ -67,6 +76,11 @@ else if (codeSmells != null && codeSmells.Any())
     private bool isLoading = false;
     private string? errorMessage;
     private List<CodeSmellDetection.Models.CodeSmell>? codeSmells;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await this.DetectCodeSmells();
+    }
 
     private async Task DetectCodeSmells()
     {
