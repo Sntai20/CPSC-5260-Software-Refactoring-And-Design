@@ -7,16 +7,16 @@ using Microsoft.Extensions.Logging;
 
 /// <inheritdoc />
 internal class CodeSmellDetectionService(
-    StructuralDuplicateCode structuralDuplicateCodeDetector,
-    LongMethod longMethodDetector,
-    LongParameterList longParameterListDetector,
+    StructuralDuplicateCode structuralDuplicateCodeDetection,
+    LongMethod longMethodDetection,
+    LongParameterList longParameterListDetection,
     ILogger<CodeSmellDetectionService> logger,
     IConfiguration configuration)
     : ICodeSmellDetectionService
 {
-    private readonly StructuralDuplicateCode structuralDuplicateCodeDetector = structuralDuplicateCodeDetector;
-    private readonly LongMethod longMethodDetector = longMethodDetector;
-    private readonly LongParameterList longParameterListDetector = longParameterListDetector;
+    private readonly StructuralDuplicateCode structuralDuplicateCodeDetection = structuralDuplicateCodeDetection;
+    private readonly LongMethod longMethodDetection = longMethodDetection;
+    private readonly LongParameterList longParameterListDetection = longParameterListDetection;
     private readonly ILogger<CodeSmellDetectionService> logger = logger;
     private readonly IConfiguration configuration = configuration;
 
@@ -29,13 +29,13 @@ internal class CodeSmellDetectionService(
 
         var codeSmells = new List<CodeSmell>();
 
-        List<CodeSmell>? duplicatedCodeSmells = await Task.Run(() => this.structuralDuplicateCodeDetector.Detect(fileContents));
-        codeSmells.AddRange(duplicatedCodeSmells);
+        List<CodeSmell>? structuralDuplicateCodeSmells = await Task.Run(() => this.structuralDuplicateCodeDetection.Detect(fileContents));
+        codeSmells.AddRange(structuralDuplicateCodeSmells);
 
-        var longMethodSmells = await Task.Run(() => this.longMethodDetector.Detect(fileContents));
+        List<CodeSmell>? longMethodSmells = await Task.Run(() => this.longMethodDetection.Detect(fileContents));
         codeSmells.AddRange(longMethodSmells);
 
-        var longParameterListSmells = await Task.Run(() => this.longParameterListDetector.Detect(fileContents));
+        var longParameterListSmells = await Task.Run(() => this.longParameterListDetection.Detect(fileContents));
         codeSmells.AddRange(longParameterListSmells);
 
         this.logger.LogInformation($"Detected {codeSmells.Count} code smells in the provided code file {pathToCodeFile}.");
