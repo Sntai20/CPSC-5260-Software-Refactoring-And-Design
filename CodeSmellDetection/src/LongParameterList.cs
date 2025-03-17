@@ -12,12 +12,12 @@ using Microsoft.Extensions.Options;
 /// <summary>
 /// Detects methods with long parameter lists in C# source code.
 /// </summary>
-internal class LongParameterListDetector(
-    IOptions<LongParameterListDetectorOptions> options,
-    ILogger<LongParameterListDetector> logger)
+internal class LongParameterList(
+    IOptions<LongParameterListOptions> options,
+    ILogger<LongParameterList> logger)
 {
-    private readonly IOptions<LongParameterListDetectorOptions> options = options;
-    private readonly ILogger<LongParameterListDetector> logger = logger;
+    private readonly IOptions<LongParameterListOptions> options = options;
+    private readonly ILogger<LongParameterList> logger = logger;
 
     /// <summary>
     /// Detects methods with parameter lists longer than the specified threshold in the provided C# source code.

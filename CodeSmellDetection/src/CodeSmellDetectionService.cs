@@ -8,15 +8,15 @@ using Microsoft.Extensions.Logging;
 /// <inheritdoc />
 internal class CodeSmellDetectionService(
     StructuralDuplicateCode structuralDuplicateCodeDetector,
-    LongMethodDetector longMethodDetector,
-    LongParameterListDetector longParameterListDetector,
+    LongMethod longMethodDetector,
+    LongParameterList longParameterListDetector,
     ILogger<CodeSmellDetectionService> logger,
     IConfiguration configuration)
     : ICodeSmellDetectionService
 {
     private readonly StructuralDuplicateCode structuralDuplicateCodeDetector = structuralDuplicateCodeDetector;
-    private readonly LongMethodDetector longMethodDetector = longMethodDetector;
-    private readonly LongParameterListDetector longParameterListDetector = longParameterListDetector;
+    private readonly LongMethod longMethodDetector = longMethodDetector;
+    private readonly LongParameterList longParameterListDetector = longParameterListDetector;
     private readonly ILogger<CodeSmellDetectionService> logger = logger;
     private readonly IConfiguration configuration = configuration;
 

@@ -11,15 +11,15 @@ public static class ServiceCollectionExtensions
         _ = services.AddOptions<StructuralDuplicateCodeOptions>()
             .BindConfiguration("StructuralDuplicateCodeOptions");
 
-        _ = services.AddOptions<LongMethodDetectorOptions>()
-            .BindConfiguration("LongMethodDetectorOptions");
+        _ = services.AddOptions<LongMethodOptions>()
+            .BindConfiguration("LongMethodOptions");
 
-        _ = services.AddOptions<LongParameterListDetectorOptions>()
-            .BindConfiguration("LongParameterListDetectorOptions");
+        _ = services.AddOptions<LongParameterListOptions>()
+            .BindConfiguration("LongParameterListOptions");
 
         _ = services.AddSingleton<StructuralDuplicateCode>()
-            .AddSingleton<LongMethodDetector>()
-            .AddSingleton<LongParameterListDetector>()
+            .AddSingleton<LongMethod>()
+            .AddSingleton<LongParameterList>()
             .AddSingleton<ICodeSmellDetectionService, CodeSmellDetectionService>();
 
         return services;

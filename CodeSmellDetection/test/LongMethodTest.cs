@@ -7,22 +7,22 @@ using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 
-public class LongMethodDetectorTest
+public class LongMethodTest
 {
-    private readonly Mock<IOptions<LongMethodDetectorOptions>> optionsMock;
-    private readonly Mock<ILogger<LongMethodDetector>> loggerMock;
-    private readonly LongMethodDetector detector;
+    private readonly Mock<IOptions<LongMethodOptions>> optionsMock;
+    private readonly Mock<ILogger<LongMethod>> loggerMock;
+    private readonly LongMethod detector;
 
-    public LongMethodDetectorTest()
+    public LongMethodTest()
     {
-        this.optionsMock = new Mock<IOptions<LongMethodDetectorOptions>>();
-        this.loggerMock = new Mock<ILogger<LongMethodDetector>>();
-        this.detector = new LongMethodDetector(
+        this.optionsMock = new Mock<IOptions<LongMethodOptions>>();
+        this.loggerMock = new Mock<ILogger<LongMethod>>();
+        this.detector = new LongMethod(
             this.optionsMock.Object,
             this.loggerMock.Object);
 
         _ = this.optionsMock.Setup(x => x.Value)
-                       .Returns(new LongMethodDetectorOptions { MethodLineCountThreshold = 15 });
+                       .Returns(new LongMethodOptions { MethodLineCountThreshold = 15 });
     }
 
     [Fact]

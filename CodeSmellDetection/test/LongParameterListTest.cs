@@ -8,22 +8,22 @@ using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 
-public class LongParameterListDetectorTest
+public class LongParameterListTest
 {
-    private readonly Mock<IOptions<LongParameterListDetectorOptions>> longParameterListDetectorOptions;
-    private readonly Mock<ILogger<LongParameterListDetector>> loggerMock;
-    private readonly LongParameterListDetector detector;
+    private readonly Mock<IOptions<LongParameterListOptions>> longParameterListDetectorOptions;
+    private readonly Mock<ILogger<LongParameterList>> loggerMock;
+    private readonly LongParameterList detector;
 
-    public LongParameterListDetectorTest()
+    public LongParameterListTest()
     {
-        this.longParameterListDetectorOptions = new Mock<IOptions<LongParameterListDetectorOptions>>();
-        this.loggerMock = new Mock<ILogger<LongParameterListDetector>>();
-        this.detector = new LongParameterListDetector(
+        this.longParameterListDetectorOptions = new Mock<IOptions<LongParameterListOptions>>();
+        this.loggerMock = new Mock<ILogger<LongParameterList>>();
+        this.detector = new LongParameterList(
             this.longParameterListDetectorOptions.Object,
             this.loggerMock.Object);
 
         _ = this.longParameterListDetectorOptions.Setup(x => x.Value)
-                       .Returns(new LongParameterListDetectorOptions { ParameterThreshold = 3 });
+                       .Returns(new LongParameterListOptions { ParameterThreshold = 3 });
     }
 
     [Fact]

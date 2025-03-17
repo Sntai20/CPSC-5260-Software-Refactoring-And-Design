@@ -3,7 +3,7 @@
 /// <summary>
 /// Options for configuring the long parameter list detector.
 /// </summary>
-internal class LongParameterListDetectorOptions
+internal class LongParameterListOptions
 {
     /// <summary>
     /// Gets or sets the threshold for the number of parameters that triggers a detection.

@@ -8,13 +8,14 @@ using Microsoft.Extensions.Options;
 /// <summary>
 /// Detects long methods in the provided file contents.
 /// </summary>
-internal class LongMethodDetector(
-    IOptions<LongMethodDetectorOptions> options,
-    ILogger<LongMethodDetector> logger)
+internal class LongMethod(
+    IOptions<LongMethodOptions> options,
+    ILogger<LongMethod> logger)
 {
-    private readonly IOptions<LongMethodDetectorOptions> options = options;
-    private readonly ILogger<LongMethodDetector> logger = logger;
+    private readonly IOptions<LongMethodOptions> options = options;
+    private readonly ILogger<LongMethod> logger = logger;
 
+    // TODO: Ignore comments from the fileContents.
     public List<CodeSmell> Detect(string fileContents)
     {
         var codeSmells = new List<CodeSmell>();
@@ -33,6 +34,7 @@ internal class LongMethodDetector(
             {
                 if (inMethod && methodLineCount >= methodLineCountThreshold)
                 {
+                    // TODO: Improve log statement to be data dense.
                     this.logger.LogInformation("Long Method Detected.");
                     codeSmells.Add(CreateCodeSmell(fileContents, methodStartLine, currentLineNumber));
                 }
@@ -51,6 +53,7 @@ internal class LongMethodDetector(
             {
                 if (inMethod && methodLineCount >= methodLineCountThreshold)
                 {
+                    // TODO: Improve log statement to be data dense.
                     this.logger.LogWarning("Long Method Detected.");
                     codeSmells.Add(CreateCodeSmell(fileContents, methodStartLine, currentLineNumber));
                 }
@@ -79,6 +82,7 @@ internal class LongMethodDetector(
     {
         return new CodeSmell
         {
+            // TODO: Improve the description.
             Type = CodeSmellType.LongMethod,
             Description = "Long Method Detected",
             LineNumber = startLine,

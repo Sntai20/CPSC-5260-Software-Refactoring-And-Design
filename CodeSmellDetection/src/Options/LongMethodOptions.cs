@@ -3,7 +3,7 @@
 /// <summary>
 /// Options for configuring the long method detector.
 /// </summary>
-internal class LongMethodDetectorOptions
+internal class LongMethodOptions
 {
     /// <summary>
     /// Gets or sets the threshold for the number of lines in a method before it is considered a long method.
