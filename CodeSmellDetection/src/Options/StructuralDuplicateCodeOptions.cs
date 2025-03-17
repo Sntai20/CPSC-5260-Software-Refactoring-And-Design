@@ -1,9 +1,9 @@
 ﻿namespace CodeSmellDetection.Options;
 
 /// <summary>
-/// Options for configuring the duplicated code detector.
+/// Options for configuring the structural duplicate code detector.
 /// </summary>
-internal class DuplicatedCodeDetectorOptions
+internal class StructuralDuplicateCodeOptions
 {
     /// <summary>
     /// Gets or sets the Jaccard similarity threshold for detecting duplicated code.

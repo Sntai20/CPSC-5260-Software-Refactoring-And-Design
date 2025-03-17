@@ -1,4 +1,4 @@
-namespace CodeSmellDetection;
+namespace CodeSmellDetection.Detections;
 
 using System;
 using System.Collections.Generic;
@@ -12,10 +12,10 @@ using Microsoft.Extensions.Options;
 /// Detects structural duplicated code within a given file content using Jaccard similarity.
 /// </summary>
 internal class StructuralDuplicateCode(
-    IOptions<DuplicatedCodeDetectorOptions> options,
+    IOptions<StructuralDuplicateCodeOptions> options,
     ILogger<StructuralDuplicateCode> logger)
 {
-    private readonly IOptions<DuplicatedCodeDetectorOptions> options = options;
+    private readonly IOptions<StructuralDuplicateCodeOptions> options = options;
     private readonly ILogger<StructuralDuplicateCode> logger = logger;
 
     /// <summary>

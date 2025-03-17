@@ -1,19 +1,20 @@
 namespace CodeSmellDetection;
 
+using CodeSmellDetection.Detections;
 using CodeSmellDetection.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 /// <inheritdoc />
 internal class CodeSmellDetectionService(
-    DuplicatedCodeDetector duplicatedCodeDetector,
+    StructuralDuplicateCode structuralDuplicateCodeDetector,
     LongMethodDetector longMethodDetector,
     LongParameterListDetector longParameterListDetector,
     ILogger<CodeSmellDetectionService> logger,
     IConfiguration configuration)
     : ICodeSmellDetectionService
 {
-    private readonly DuplicatedCodeDetector duplicatedCodeDetector = duplicatedCodeDetector;
+    private readonly StructuralDuplicateCode structuralDuplicateCodeDetector = structuralDuplicateCodeDetector;
     private readonly LongMethodDetector longMethodDetector = longMethodDetector;
     private readonly LongParameterListDetector longParameterListDetector = longParameterListDetector;
     private readonly ILogger<CodeSmellDetectionService> logger = logger;
@@ -28,7 +29,7 @@ internal class CodeSmellDetectionService(
 
         var codeSmells = new List<CodeSmell>();
 
-        List<CodeSmell>? duplicatedCodeSmells = await Task.Run(() => this.duplicatedCodeDetector.Detect(fileContents));
+        List<CodeSmell>? duplicatedCodeSmells = await Task.Run(() => this.structuralDuplicateCodeDetector.Detect(fileContents));
         codeSmells.AddRange(duplicatedCodeSmells);
 
         var longMethodSmells = await Task.Run(() => this.longMethodDetector.Detect(fileContents));

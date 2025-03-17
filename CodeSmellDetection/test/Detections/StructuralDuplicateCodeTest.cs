@@ -1,7 +1,7 @@
-namespace CodeSmellDetectionTest;
+namespace CodeSmellDetectionTest.Detections;
 
 using System;
-using CodeSmellDetection;
+using CodeSmellDetection.Detections;
 using CodeSmellDetection.Models;
 using CodeSmellDetection.Options;
 using Microsoft.Extensions.Logging;
@@ -9,20 +9,20 @@ using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 
-public class DuplicatedCodeDetectorTest
+public class StructuralDuplicateCodeTest
 {
-    private readonly Mock<IOptions<DuplicatedCodeDetectorOptions>> optionsMock;
-    private readonly Mock<ILogger<DuplicatedCodeDetector>> loggerMock;
-    private readonly DuplicatedCodeDetector detector;
+    private readonly Mock<IOptions<StructuralDuplicateCodeOptions>> optionsMock;
+    private readonly Mock<ILogger<StructuralDuplicateCode>> loggerMock;
+    private readonly StructuralDuplicateCode detector;
 
-    public DuplicatedCodeDetectorTest()
+    public StructuralDuplicateCodeTest()
     {
-        this.optionsMock = new Mock<IOptions<DuplicatedCodeDetectorOptions>>();
+        this.optionsMock = new Mock<IOptions<StructuralDuplicateCodeOptions>>();
         _ = this.optionsMock
             .Setup(x => x.Value)
-            .Returns(new DuplicatedCodeDetectorOptions { JaccardThreshold = 0.75 });
-        this.loggerMock = new Mock<ILogger<DuplicatedCodeDetector>>();
-        this.detector = new DuplicatedCodeDetector(
+            .Returns(new StructuralDuplicateCodeOptions { JaccardThreshold = 0.75 });
+        this.loggerMock = new Mock<ILogger<StructuralDuplicateCode>>();
+        this.detector = new StructuralDuplicateCode(
             this.optionsMock.Object,
             this.loggerMock.Object);
     }
@@ -141,7 +141,7 @@ public class DuplicatedCodeDetectorTest
             ";
 
         // Act
-        var functions = DuplicatedCodeDetector.ExtractFunctions(fileContents);
+        var functions = StructuralDuplicateCode.ExtractFunctions(fileContents);
 
         // Assert
         Assert.Equal(3, functions.Count);
@@ -160,7 +160,7 @@ public class DuplicatedCodeDetectorTest
             ";
 
         // Act
-        var functions = DuplicatedCodeDetector.ExtractFunctions(fileContents);
+        var functions = StructuralDuplicateCode.ExtractFunctions(fileContents);
 
         // Assert
         Assert.Empty(functions);
@@ -178,7 +178,7 @@ public class DuplicatedCodeDetectorTest
             }";
 
         // Act
-        var content = DuplicatedCodeDetector.ExtractFunctionContent(function);
+        var content = StructuralDuplicateCode.ExtractFunctionContent(function);
 
         // Assert
         Assert.Equal($"int a = 1;{Environment.NewLine}int b = 2;", content);
@@ -194,7 +194,7 @@ public class DuplicatedCodeDetectorTest
             }";
 
         // Act
-        var content = DuplicatedCodeDetector.ExtractFunctionContent(function);
+        var content = StructuralDuplicateCode.ExtractFunctionContent(function);
 
         // Assert
         Assert.Equal(string.Empty, content);
@@ -208,7 +208,7 @@ public class DuplicatedCodeDetectorTest
         var content2 = "int a = 1; int b = 2;";
 
         // Act
-        var similarity = DuplicatedCodeDetector.CalculateJaccardSimilarity(content1, content2);
+        var similarity = StructuralDuplicateCode.CalculateJaccardSimilarity(content1, content2);
 
         // Assert
         Assert.Equal(1.0, similarity);
@@ -222,7 +222,7 @@ public class DuplicatedCodeDetectorTest
         var content2 = "string b = \"test\";";
 
         // Act
-        var similarity = DuplicatedCodeDetector.CalculateJaccardSimilarity(content1, content2);
+        var similarity = StructuralDuplicateCode.CalculateJaccardSimilarity(content1, content2);
 
         // Assert
         Assert.Equal(0.0, similarity);
@@ -236,7 +236,7 @@ public class DuplicatedCodeDetectorTest
         var content2 = "int a = 1; string c = \"test\";";
 
         // Act
-        var similarity = DuplicatedCodeDetector.CalculateJaccardSimilarity(content1, content2);
+        var similarity = StructuralDuplicateCode.CalculateJaccardSimilarity(content1, content2);
 
         // Assert
         Assert.InRange(similarity, 0.0, 1.0);
