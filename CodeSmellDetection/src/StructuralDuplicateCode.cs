@@ -9,14 +9,14 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 /// <summary>
-/// Detects duplicated code within a given file content using Jaccard similarity.
+/// Detects structural duplicated code within a given file content using Jaccard similarity.
 /// </summary>
-internal class DuplicatedCodeDetector(
+internal class StructuralDuplicateCode(
     IOptions<DuplicatedCodeDetectorOptions> options,
-    ILogger<DuplicatedCodeDetector> logger)
+    ILogger<StructuralDuplicateCode> logger)
 {
     private readonly IOptions<DuplicatedCodeDetectorOptions> options = options;
-    private readonly ILogger<DuplicatedCodeDetector> logger = logger;
+    private readonly ILogger<StructuralDuplicateCode> logger = logger;
 
     /// <summary>
     /// Detects duplicated code within the provided file contents.
@@ -58,6 +58,7 @@ internal class DuplicatedCodeDetector(
 
                 if (jaccardSimilarity >= this.options.Value.JaccardThreshold)
                 {
+                    // TODO: Fix the line numbers so that they are accurate.
                     this.logger.LogWarning($"Duplicated code detected between functions {i + 1} and {j + 1} with Jaccard similarity {jaccardSimilarity}.");
                     codeSmells.Add(new CodeSmell
                     {
