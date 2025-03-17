@@ -1,4 +1,4 @@
-﻿namespace CodeSmellDetection;
+﻿namespace CodeSmellDetection.Detections;
 
 using System.Linq;
 using CodeSmellDetection.Models;

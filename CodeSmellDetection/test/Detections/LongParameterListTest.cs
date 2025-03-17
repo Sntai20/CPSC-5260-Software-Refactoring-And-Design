@@ -1,6 +1,6 @@
-namespace CodeSmellDetectionTest;
+namespace CodeSmellDetectionTest.Detections;
 
-using CodeSmellDetection;
+using CodeSmellDetection.Detections;
 using CodeSmellDetection.Models;
 using CodeSmellDetection.Options;
 using Microsoft.Extensions.Logging;
