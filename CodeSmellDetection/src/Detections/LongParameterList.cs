@@ -23,8 +23,8 @@ internal class LongParameterList(
     /// Detects methods with parameter lists longer than the specified threshold in the provided C# source code.
     /// </summary>
     /// <param name="fileContents">The contents of the C# source file to analyze.</param>
-    /// <returns>A <see cref="CodeSmell"/> object representing the detected code smell, or null if no code smell is detected.</returns>
-    public CodeSmell Detect(string fileContents)
+    /// <returns>A list of detected code smells.</returns>
+    public List<CodeSmell> Detect(string fileContents)
     {
         var tree = CSharpSyntaxTree.ParseText(fileContents);
         var root = tree.GetRoot();
@@ -34,10 +34,12 @@ internal class LongParameterList(
             .OfType<MethodDeclarationSyntax>()
             .Where(m => m.ParameterList.Parameters.Count > parameterThreshold);
 
+        var codeSmells = new List<CodeSmell>();
+
         foreach (var method in methodsWithLongParameterLists)
         {
             this.logger.LogWarning($"Method '{method.Identifier}' has a long parameter list with {method.ParameterList.Parameters.Count} parameters.");
-            return new CodeSmell
+            codeSmells.Add(new CodeSmell
             {
                 Type = CodeSmellType.LongParameterLists,
                 Code = fileContents,
@@ -47,10 +49,14 @@ internal class LongParameterList(
                 EndLine = method.GetLocation().GetMappedLineSpan().EndLinePosition.Line + 1,
                 SmellRecommendation = "Consider refactoring the method to reduce the number of parameters.",
                 SmellCodeRecommendation = $"public void {method.Identifier}({string.Join(", ", method.ParameterList.Parameters)}) {{ }}",
-            };
+            });
         }
 
-        this.logger.LogInformation("Methods with long parameter lists not detected.");
-        return null;
+        if (codeSmells.Count == 0)
+        {
+            this.logger.LogInformation("Methods with long parameter lists not detected.");
+        }
+
+        return codeSmells;
     }
 }

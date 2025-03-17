@@ -35,7 +35,7 @@ internal class CodeSmellDetectionService(
         List<CodeSmell>? longMethodSmells = await Task.Run(() => this.longMethodDetection.Detect(fileContents));
         codeSmells.AddRange(longMethodSmells);
 
-        var longParameterListSmells = await Task.Run(() => this.longParameterListDetection.Detect(fileContents));
+        List<CodeSmell>? longParameterListSmells = await Task.Run(() => this.longParameterListDetection.Detect(fileContents));
         codeSmells.AddRange(longParameterListSmells);
 
         this.logger.LogInformation($"Detected {codeSmells.Count} code smells in the provided code file {pathToCodeFile}.");

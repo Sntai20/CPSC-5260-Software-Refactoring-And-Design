@@ -38,7 +38,7 @@ public class LongParameterListTest
             }";
 
         // Act
-        CodeSmell? codeSmell = this.detector.Detect(fileContents);
+        List<CodeSmell>? codeSmells = this.detector.Detect(fileContents);
 
         // Assert
         this.loggerMock.Verify(
@@ -52,8 +52,8 @@ public class LongParameterListTest
                 It.IsAny<Exception?>(),
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
             Times.Once);
-        Assert.NotEmpty(codeSmell.Code);
-        Assert.Equal(5, codeSmell.LineNumber);
+        Assert.NotEmpty(codeSmells[0].Code);
+        Assert.Equal(5, codeSmells[0].LineNumber);
     }
 
     [Fact]
@@ -68,7 +68,7 @@ public class LongParameterListTest
             }";
 
         // Act
-        CodeSmell? codeSmell = this.detector.Detect(fileContents);
+        List<CodeSmell>? codeSmells = this.detector.Detect(fileContents);
 
         // Assert
         this.loggerMock.Verify(
@@ -82,6 +82,6 @@ public class LongParameterListTest
                 It.IsAny<Exception?>(),
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
             Times.Once);
-        Assert.Null(codeSmell);
+        Assert.Empty(codeSmells);
     }
 }
