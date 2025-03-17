@@ -1,5 +1,6 @@
 ﻿namespace CodeSmellDetection.Detections;
 
+using System.Text.RegularExpressions;
 using CodeSmellDetection.Models;
 using CodeSmellDetection.Options;
 using Microsoft.Extensions.Logging;
@@ -28,7 +29,7 @@ internal class LongMethod(
         foreach (var line in fileContents.Split(Environment.NewLine))
         {
             currentLineNumber++;
-            var trimmedLine = line.Trim();
+            var trimmedLine = RemoveComments(line.Trim());
 
             if (IsMethodDeclaration(trimmedLine))
             {
@@ -90,5 +91,10 @@ internal class LongMethod(
             EndLine = endLine,
             Code = fileContents,
         };
+    }
+
+    private static string RemoveComments(string line)
+    {
+        return Regex.Replace(line, @"//.*?$|/\*.*?\*/", string.Empty, RegexOptions.Singleline);
     }
 }
