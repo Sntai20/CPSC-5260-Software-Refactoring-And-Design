@@ -349,7 +349,7 @@ public class LongMethodTest
         Assert.Equal(line, result);
     }
 
-    [Fact(Skip = "WIP")]
+    [Fact]
     public void Detect_LongMethodDetected_MultipleMethods()
     {
         // Arrange
@@ -430,11 +430,13 @@ public class LongMethodTest
             x => x.Log(
                 It.Is<LogLevel>(l => l == LogLevel.Warning),
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Long Method Detected.")),
+                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Long Method Detected from line")),
                 It.IsAny<Exception?>(),
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
             Times.Exactly(2));
         Assert.Equal(2, codeSmells.Count);
+        Assert.Equal(6, codeSmells[0].StartLine);
+        Assert.Equal(33, codeSmells[1].StartLine);
     }
 
     [Fact]
