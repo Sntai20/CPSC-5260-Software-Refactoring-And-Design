@@ -54,4 +54,11 @@ internal class CodeSmellDetectionService(
 
         return codeSmells;
     }
+
+    /// <inheritdoc />
+    public Task<CodeSmell> RefactorAsync(CodeSmell codeSmell)
+    {
+        // TODO: Implement the refactoring logic here to call a service to get the refactored code.
+        throw new NotImplementedException();
+    }
 }

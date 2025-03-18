@@ -1,4 +1,5 @@
 ﻿@page "/codesmell"
+@using CodeSmellDetection.Models
 @rendermode InteractiveServer
 @inject ICodeSmellDetectionService CodeSmellDetectionService
 
@@ -20,8 +21,6 @@ else if (!string.IsNullOrEmpty(errorMessage))
 }
 else if (codeSmells != null && codeSmells.Any())
 {
-    // TODO: If the code smell is a structural duplicate code smell, add a button to refactor.
-    // TODO: If a code refactor is produced, include the option to save to a file.
     <p>File Name: @codeSmells.First().FileName, Current code smell count: @currentCount</p>
     <br />
     <h3>Detected Code Smells Types</h3>
@@ -32,6 +31,7 @@ else if (codeSmells != null && codeSmells.Any())
                 <th>Type</th>
                 <th>Description</th>
                 <th>Line Number</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -41,6 +41,13 @@ else if (codeSmells != null && codeSmells.Any())
                     <td>@codeSmell.Type</td>
                     <td>@codeSmell.Description</td>
                     <td>@codeSmell.LineNumber</td>
+                    <td>
+                        @if (codeSmell.Type == CodeSmellType.DuplicatedCode)
+                        {
+                            // TODO: If a code refactor is produced, include the option to save to a file.
+                            <button class="btn btn-secondary" @onclick="() => RefactorCodeSmell(codeSmell)">Refactor</button>
+                        }
+                    </td>
                 </tr>
             }
         </tbody>
@@ -137,5 +144,11 @@ else if (codeSmells != null && codeSmells.Any())
         var lines = code.Split(Environment.NewLine);
         var numberedLines = lines.Select((line, index) => $"{index + 1}: {line}");
         return string.Join(Environment.NewLine, numberedLines);
+    }
+
+    private async Task RefactorCodeSmell(CodeSmellDetection.Models.CodeSmell codeSmell)
+    {
+        var refactoredCode = await CodeSmellDetectionService.RefactorAsync(codeSmell);
+        // TODO: Update the UI with the refactored code.
     }
 }
