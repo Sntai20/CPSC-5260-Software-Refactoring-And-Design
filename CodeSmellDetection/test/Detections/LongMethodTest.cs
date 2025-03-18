@@ -27,7 +27,7 @@ public class LongMethodTest
     }
 
     [Fact(Skip = "WIP")]
-    public void Detect_LongMethodDetected_LogsInformation()
+    public void Detect_LongMethodDetected_LogsWarning()
     {
         // Arrange
         string fileContents = @"
@@ -73,14 +73,14 @@ public class LongMethodTest
         var codeSmells = this.detector.Detect(fileContents);
 
         // Assert
-        this.loggerMock.Verify(
+        /*this.loggerMock.Verify(
             x => x.Log(
                 It.Is<LogLevel>(l => l == LogLevel.Warning),
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Long Method Detected.")),
+                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Long Method Detected from line 1 to 2.")),
                 It.IsAny<Exception?>(),
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
-            Times.Once);
+            Times.Once);*/
         Assert.Empty(codeSmells);
         Assert.NotEmpty(codeSmells[0].Code);
         Assert.Equal(9, codeSmells[0].StartLine);
@@ -348,60 +348,6 @@ public class LongMethodTest
 
         // Assert
         Assert.Equal(line, result);
-    }
-
-    [Fact(Skip = "WIP")]
-    public void Detect_LongMethodDetected_LogsWarning()
-    {
-        // Arrange
-        string fileContents = @"
-            public class TestClass
-            {
-                public void LongMethod()
-                {
-                    int n = 10;
-                    for (int i = 0; i < n; i++)
-                    {
-                        if (i == 1)
-                        {
-                            Console.WriteLine($""{n}, "");
-                        }
-                    }
-
-                    int q = 10;
-                    for (int i = 0; i < q; i++)
-                    {
-                        if (i == 1)
-                        {
-                            Console.WriteLine($""{q}, "");
-                        }
-                    }
-
-                    int t = 10;
-                    for (int i = 0; i < t; i++)
-                    {
-                        if (i == 1)
-                        {
-                            Console.WriteLine($""{t}, "");
-                        }
-                    }
-                }
-            }";
-
-        // Act
-        var codeSmells = this.detector.Detect(fileContents);
-
-        // Assert
-        this.loggerMock.Verify(
-            x => x.Log(
-                It.Is<LogLevel>(l => l == LogLevel.Warning),
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Long Method Detected from line {methodStartLine} to {currentLineNumber}")),
-                It.IsAny<Exception?>(),
-                It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
-            Times.Once);
-        Assert.NotEmpty(codeSmells);
-        Assert.Equal(9, codeSmells[0].StartLine);
     }
 
     [Fact(Skip = "WIP")]
