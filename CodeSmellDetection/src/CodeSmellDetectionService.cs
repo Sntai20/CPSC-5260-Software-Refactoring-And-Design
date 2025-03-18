@@ -26,7 +26,14 @@ internal class CodeSmellDetectionService(
         string? pathToCodeFile = this.configuration["PathToCodeFile"]
                                  ?? throw new InvalidOperationException("Path to fileContents file not found in configuration.");
         string fileContents = await File.ReadAllTextAsync(pathToCodeFile);
+        string fileName = Path.GetFileName(pathToCodeFile);
 
+        return await this.DetectAsync(fileName, fileContents);
+    }
+
+    /// <inheritdoc />
+    public async Task<List<CodeSmell>> DetectAsync(string fileName, string fileContents)
+    {
         var codeSmells = new List<CodeSmell>();
 
         List<CodeSmell>? structuralDuplicateCodeSmells = await Task.Run(() => this.structuralDuplicateCodeDetection.Detect(fileContents));
@@ -38,9 +45,8 @@ internal class CodeSmellDetectionService(
         List<CodeSmell>? longParameterListSmells = await Task.Run(() => this.longParameterListDetection.Detect(fileContents));
         codeSmells.AddRange(longParameterListSmells);
 
-        this.logger.LogInformation($"Detected {codeSmells.Count} code smells in the provided code file {pathToCodeFile}.");
+        this.logger.LogInformation($"Detected {codeSmells.Count} code smells in the provided code file {fileName}.");
 
-        string fileName = Path.GetFileName(pathToCodeFile);
         foreach (var smell in codeSmells)
         {
             smell.FileName = fileName;
