@@ -155,7 +155,7 @@ internal class StructuralDuplicateCode(
         var content = function.Substring(startIndex, endIndex - startIndex).Trim();
 
         // Normalize indentation.
-        var lines = content.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+        var lines = content.Split([Environment.NewLine], StringSplitOptions.None);
         var trimmedLines = lines.Select(line => line.TrimStart());
         return string.Join(Environment.NewLine, trimmedLines);
     }
