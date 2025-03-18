@@ -27,13 +27,13 @@ internal class StructuralDuplicateCode(
     {
         var codeSmells = new List<CodeSmell>();
         var functions = ExtractFunctions(fileContents);
-        var functionContents = new List<string>();
+        var functionContents = new List<(string Content, int LineNumber)>();
         var functionNames = new HashSet<string>();
 
         foreach (var (content, lineNumber) in functions)
         {
             var functionContent = ExtractFunctionContent(content);
-            functionContents.Add(functionContent);
+            functionContents.Add((functionContent, lineNumber));
 
             if (!IsMethodDeclarationHelper.IsMethodDeclaration(content))
             {
@@ -44,7 +44,7 @@ internal class StructuralDuplicateCode(
 
             if (!functionNames.Add(functionName))
             {
-                this.logger.LogWarning($"Duplicate function name detected: {functionName}.");
+                this.logger.LogWarning($"Duplicate function name detected: {functionName} on line {lineNumber}.");
                 codeSmells.Add(new CodeSmell
                 {
                     Type = CodeSmellType.DuplicatedCode,
@@ -57,10 +57,10 @@ internal class StructuralDuplicateCode(
 
         for (int i = 0; i < functionContents.Count; i++)
         {
-            var currentContent = functionContents[i];
+            (string currentContent, int currentLineNumber) = functionContents[i];
             for (int j = i + 1; j < functionContents.Count; j++)
             {
-                var comparisonContent = functionContents[j];
+                var (comparisonContent, comparisonLineNumber) = functionContents[j];
                 var jaccardSimilarity = CalculateJaccardSimilarity(currentContent, comparisonContent);
 
                 if (jaccardSimilarity >= this.options.Value.JaccardThreshold)
@@ -71,9 +71,9 @@ internal class StructuralDuplicateCode(
                     {
                         Type = CodeSmellType.DuplicatedCode,
                         Description = $"Duplicated code detected between functions {i + 1} and {j + 1} with Jaccard similarity {jaccardSimilarity}.",
-                        LineNumber = i + 1,
-                        StartLine = i + 1,
-                        EndLine = j + 1,
+                        LineNumber = currentLineNumber,
+                        StartLine = currentLineNumber,
+                        EndLine = comparisonLineNumber,
                         Code = fileContents,
                     });
                 }
@@ -104,7 +104,9 @@ internal class StructuralDuplicateCode(
             var startIndex = match.Index;
             var braceCount = 0;
             var endIndex = startIndex;
-            var lineNumber = fileContents.Substring(0, startIndex).Count(c => c == '\n') + 1;
+            var lineNumber = fileContents.Substring(0, startIndex)
+                .Where(c => c == '\n' || !char.IsWhiteSpace(c))
+                .Count(c => c == '\n') + 1;
 
             // Handle nested braces when extracting function bodies.
             for (int i = startIndex; i < fileContents.Length; i++)
