@@ -65,12 +65,12 @@ internal class StructuralDuplicateCode(
 
                 if (jaccardSimilarity >= this.options.Value.JaccardThreshold)
                 {
-                    // TODO: Fix the line numbers so that they are accurate.
-                    this.logger.LogWarning($"Duplicated code detected between functions {i + 1} and {j + 1} with Jaccard similarity {jaccardSimilarity}.");
+                    var description = $"Duplicated code detected between functions {currentLineNumber} and {comparisonLineNumber} with Jaccard similarity {jaccardSimilarity}.";
+                    this.logger.LogWarning(description);
                     codeSmells.Add(new CodeSmell
                     {
                         Type = CodeSmellType.DuplicatedCode,
-                        Description = $"Duplicated code detected between functions {i + 1} and {j + 1} with Jaccard similarity {jaccardSimilarity}.",
+                        Description = description,
                         LineNumber = currentLineNumber,
                         StartLine = currentLineNumber,
                         EndLine = comparisonLineNumber,
