@@ -35,7 +35,13 @@ internal class StructuralDuplicateCode(
             var content = ExtractFunctionContent(function);
             functionContents.Add(content);
 
+            if (!IsMethodDeclarationHelper.IsMethodDeclaration(function))
+            {
+                continue;
+            }
+
             var functionName = ExtractFunctionName(function);
+
             if (!functionNames.Add(functionName))
             {
                 this.logger.LogWarning($"Duplicate function name detected: {functionName}.");
