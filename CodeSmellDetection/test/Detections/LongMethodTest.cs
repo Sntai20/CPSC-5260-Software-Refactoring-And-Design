@@ -121,7 +121,7 @@ public class LongMethodTest
         Assert.Empty(codeSmells);
     }
 
-    [Fact(Skip = "WIP")]
+    [Fact]
     public void Detect_LongMethodDetected_BlankLineIgnored()
     {
         // Arrange
@@ -165,12 +165,12 @@ public class LongMethodTest
             x => x.Log(
                 It.Is<LogLevel>(l => l == LogLevel.Warning),
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Long Method Detected.")),
+                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Long Method Detected from line 6 to 24.")),
                 It.IsAny<Exception?>(),
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
             Times.Once);
         Assert.NotEmpty(codeSmells[0].Code);
-        Assert.Equal(9, codeSmells[0].StartLine);
+        Assert.Equal(6, codeSmells[0].StartLine);
     }
 
     [Fact]
