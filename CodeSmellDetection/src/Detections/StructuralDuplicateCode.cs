@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 /// <summary>
-/// Detects structural duplicated code within a given file content using Jaccard similarity.
+/// Detects structural duplicated code within a given file functionContent using Jaccard similarity.
 /// </summary>
 internal class StructuralDuplicateCode(
     IOptions<StructuralDuplicateCodeOptions> options,
@@ -30,17 +30,17 @@ internal class StructuralDuplicateCode(
         var functionContents = new List<string>();
         var functionNames = new HashSet<string>();
 
-        foreach (var function in functions)
+        foreach (var (content, lineNumber) in functions)
         {
-            var content = ExtractFunctionContent(function);
-            functionContents.Add(content);
+            var functionContent = ExtractFunctionContent(content);
+            functionContents.Add(functionContent);
 
-            if (!IsMethodDeclarationHelper.IsMethodDeclaration(function))
+            if (!IsMethodDeclarationHelper.IsMethodDeclaration(content))
             {
                 continue;
             }
 
-            var functionName = ExtractFunctionName(function);
+            var functionName = ExtractFunctionName(content);
 
             if (!functionNames.Add(functionName))
             {
@@ -50,6 +50,7 @@ internal class StructuralDuplicateCode(
                     Type = CodeSmellType.DuplicatedCode,
                     Description = $"Duplicate function name detected: {functionName}.",
                     Code = fileContents,
+                    LineNumber = lineNumber,
                 });
             }
         }
@@ -92,9 +93,9 @@ internal class StructuralDuplicateCode(
     /// </summary>
     /// <param name="fileContents">The contents of the file to extract functions from.</param>
     /// <returns>A list of function strings extracted from the file contents.</returns>
-    internal static List<string> ExtractFunctions(string fileContents)
+    internal static List<(string Content, int LineNumber)> ExtractFunctions(string fileContents)
     {
-        var functions = new List<string>();
+        var functions = new List<(string Content, int LineNumber)>();
         var functionPattern = @"(public|private|protected|internal|static|async)?\s*(void|int|string|bool|Task|List<.*?>|Dictionary<.*?>|IEnumerable<.*?>|IList<.*?>|IDictionary<.*?>|ICollection<.*?>|IReadOnlyList<.*?>|IReadOnlyDictionary<.*?>|IReadOnlyCollection<.*?>|IQueryable<.*?>|IAsyncEnumerable<.*?>|IAsyncEnumerator<.*?>|IAsyncDisposable<.*?>)?\s+\w+\s*\(.*?\)\s*{";
         var matches = Regex.Matches(fileContents, functionPattern, RegexOptions.Singleline);
 
@@ -103,6 +104,7 @@ internal class StructuralDuplicateCode(
             var startIndex = match.Index;
             var braceCount = 0;
             var endIndex = startIndex;
+            var lineNumber = fileContents.Substring(0, startIndex).Count(c => c == '\n') + 1;
 
             // Handle nested braces when extracting function bodies.
             for (int i = startIndex; i < fileContents.Length; i++)
@@ -125,7 +127,7 @@ internal class StructuralDuplicateCode(
             if (braceCount == 0)
             {
                 var function = fileContents.Substring(startIndex, endIndex - startIndex + 1);
-                functions.Add(function);
+                functions.Add((function, lineNumber));
             }
         }
 
@@ -133,10 +135,10 @@ internal class StructuralDuplicateCode(
     }
 
     /// <summary>
-    /// Extracts the content of a function, excluding the function signature and braces.
+    /// Extracts the functionContent of a function, excluding the function signature and braces.
     /// </summary>
-    /// <param name="function">The function string to extract content from.</param>
-    /// <returns>The content of the function as a string.</returns>
+    /// <param name="function">The function string to extract functionContent from.</param>
+    /// <returns>The functionContent of the function as a string.</returns>
     /// <exception cref="ArgumentException">Thrown when the function string does not contain valid '{' and '}' characters.</exception>
     internal static string ExtractFunctionContent(string function)
     {
@@ -151,7 +153,7 @@ internal class StructuralDuplicateCode(
         var content = function.Substring(startIndex, endIndex - startIndex).Trim();
 
         // Normalize indentation.
-        var lines = content.Split([Environment.NewLine], StringSplitOptions.None);
+        var lines = content.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
         var trimmedLines = lines.Select(line => line.TrimStart());
         return string.Join(Environment.NewLine, trimmedLines);
     }
