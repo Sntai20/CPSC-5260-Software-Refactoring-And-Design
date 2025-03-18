@@ -74,7 +74,7 @@ internal class LongMethod(
 
         if (codeSmells.Count == 0)
         {
-            this.logger.LogInformation("No Long Methods Detected.");
+            this.logger.LogInformation("Long Methods Not Detected.");
         }
 
         return codeSmells;

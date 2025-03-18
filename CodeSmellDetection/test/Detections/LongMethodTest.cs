@@ -86,8 +86,8 @@ public class LongMethodTest
         Assert.Equal(9, codeSmells[0].StartLine);
     }
 
-    [Fact(Skip = "WIP")]
-    public void Detect_NoLongMethodDetected_LogsInformation()
+    [Fact]
+    public void Detect_LongMethodNotDetected_LogsInformation()
     {
         // Arrange
         string fileContents = @"
@@ -115,7 +115,7 @@ public class LongMethodTest
             x => x.Log(
                 It.Is<LogLevel>(l => l == LogLevel.Information),
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Long Method Not Detected.")),
+                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Long Methods Not Detected.")),
                 It.IsAny<Exception?>(),
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
             Times.Once);
