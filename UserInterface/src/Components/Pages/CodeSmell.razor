@@ -4,9 +4,10 @@
 
 <PageTitle>Code Smell Detection</PageTitle>
 
-<p role="status">Current code smell count: @currentCount</p>
 <br />
 <button class="btn btn-primary" @onclick="DetectCodeSmells" disabled="@isLoading">Click me</button>
+<br />
+<InputFile OnChange="HandleFileSelected" multiple />
 <br />
 
 @if (isLoading)
@@ -19,10 +20,9 @@ else if (!string.IsNullOrEmpty(errorMessage))
 }
 else if (codeSmells != null && codeSmells.Any())
 {
-    // TODO: Allow the user to upload a file through this page.
     // TODO: If the code smell is a structural duplicate code smell, add a button to refactor.
     // TODO: If a code refactor is produced, include the option to save to a file.
-    <p>File Name: @codeSmells.First().FileName</p>
+    <p>File Name: @codeSmells.First().FileName, Current code smell count: @currentCount</p>
     <br />
     <h3>Detected Code Smells Types</h3>
     <p>This component demonstrates the code smell types detected.</p>
@@ -76,6 +76,7 @@ else if (codeSmells != null && codeSmells.Any())
     private bool isLoading = false;
     private string? errorMessage;
     private List<CodeSmellDetection.Models.CodeSmell>? codeSmells;
+    private IBrowserFile? selectedFile;
 
     protected override async Task OnInitializedAsync()
     {
@@ -87,9 +88,31 @@ else if (codeSmells != null && codeSmells.Any())
         isLoading = true;
         errorMessage = null;
         codeSmells = null;
+
+        if (selectedFile == null)
+        {
+            try
+            {
+                codeSmells = await CodeSmellDetectionService.DetectAsync();
+                currentCount = codeSmells.Count;
+            }
+            catch (Exception ex)
+            {
+                errorMessage = $"Error detecting code smells: {ex.Message}";
+            }
+            finally
+            {
+                isLoading = false;
+            }
+            return;
+        }
+
         try
         {
-            codeSmells = await CodeSmellDetectionService.DetectAsync();
+            using var stream = selectedFile.OpenReadStream();
+            using var reader = new StreamReader(stream);
+            var fileContent = await reader.ReadToEndAsync();
+            codeSmells = await CodeSmellDetectionService.DetectAsync(selectedFile.Name, fileContent);
             currentCount = codeSmells.Count;
         }
         catch (Exception ex)
@@ -100,6 +123,13 @@ else if (codeSmells != null && codeSmells.Any())
         {
             isLoading = false;
         }
+        return;
+    }
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+        await DetectCodeSmells();
     }
 
     private string GetCodeWithLineNumbers(string code)
