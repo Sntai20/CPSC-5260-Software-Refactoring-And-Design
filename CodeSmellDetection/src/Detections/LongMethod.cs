@@ -94,7 +94,8 @@ internal class LongMethod(
                 line.StartsWith("private", StringComparison.Ordinal) ||
                 line.StartsWith("protected", StringComparison.Ordinal) ||
                 line.StartsWith("internal", StringComparison.Ordinal)) &&
-                line.Contains("(") && line.Contains(")");
+                line.Contains("(") && line.Contains(")") &&
+                !line.Contains("class");
     }
 
     internal static CodeSmell CreateCodeSmell(string fileContents, int startLine, int endLine)
