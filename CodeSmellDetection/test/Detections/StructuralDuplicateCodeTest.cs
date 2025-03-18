@@ -78,7 +78,7 @@ public class StructuralDuplicateCodeTest
             x => x.Log(
                 It.Is<LogLevel>(l => l == LogLevel.Warning),
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Duplicate function name detected: Function1.")),
+                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Duplicate function name detected: Function1")),
                 It.IsAny<Exception?>(),
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
             Times.Once);
@@ -141,13 +141,13 @@ public class StructuralDuplicateCodeTest
             ";
 
         // Act
-        var functions = StructuralDuplicateCode.ExtractFunctions(fileContents);
+        List<(string Content, int LineNumber)>? functions = StructuralDuplicateCode.ExtractFunctions(fileContents);
 
         // Assert
         Assert.Equal(3, functions.Count);
-        Assert.Contains("public void Function1()", functions[0]);
-        Assert.Contains("private int Function2()", functions[1]);
-        Assert.Contains("protected string Function3()", functions[2]);
+        Assert.Contains("public void Function1()", functions[0].Content);
+        Assert.Contains("private int Function2()", functions[1].Content);
+        Assert.Contains("protected string Function3()", functions[2].Content);
     }
 
     [Fact]
@@ -160,7 +160,7 @@ public class StructuralDuplicateCodeTest
             ";
 
         // Act
-        var functions = StructuralDuplicateCode.ExtractFunctions(fileContents);
+        List<(string Content, int LineNumber)>? functions = StructuralDuplicateCode.ExtractFunctions(fileContents);
 
         // Assert
         Assert.Empty(functions);
