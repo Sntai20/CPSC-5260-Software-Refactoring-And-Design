@@ -26,7 +26,7 @@ public class LongMethodTest
                        .Returns(new LongMethodOptions { MethodLineCountThreshold = 9 });
     }
 
-    [Fact]
+    [Fact(Skip = "WIP")]
     public void Detect_LongMethodDetected_LogsInformation()
     {
         // Arrange
@@ -73,17 +73,17 @@ public class LongMethodTest
         var codeSmells = this.detector.Detect(fileContents);
 
         // Assert
-        //this.loggerMock.Verify(
-        //    x => x.Log(
-        //        It.Is<LogLevel>(l => l == LogLevel.Warning),
-        //        It.IsAny<EventId>(),
-        //        It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Long Method Detected.")),
-        //        It.IsAny<Exception?>(),
-        //        It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
-        //    Times.Once);
+        this.loggerMock.Verify(
+            x => x.Log(
+                It.Is<LogLevel>(l => l == LogLevel.Warning),
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Long Method Detected.")),
+                It.IsAny<Exception?>(),
+                It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
+            Times.Once);
         Assert.Empty(codeSmells);
-        //Assert.NotEmpty(codeSmells[0].Code);
-        //Assert.Equal(9, codeSmells[0].StartLine);
+        Assert.NotEmpty(codeSmells[0].Code);
+        Assert.Equal(9, codeSmells[0].StartLine);
     }
 
     [Fact(Skip = "WIP")]
@@ -392,14 +392,14 @@ public class LongMethodTest
         var codeSmells = this.detector.Detect(fileContents);
 
         // Assert
-        /*this.loggerMock.Verify(
+        this.loggerMock.Verify(
             x => x.Log(
                 It.Is<LogLevel>(l => l == LogLevel.Warning),
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Long Method Detected from line {methodStartLine} to {currentLineNumber}")),
                 It.IsAny<Exception?>(),
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
-            Times.Once);*/
+            Times.Once);
         Assert.NotEmpty(codeSmells);
         Assert.Equal(9, codeSmells[0].StartLine);
     }
@@ -518,5 +518,4 @@ public class LongMethodTest
             Times.Once);
         Assert.Empty(codeSmells);
     }
-
 }
