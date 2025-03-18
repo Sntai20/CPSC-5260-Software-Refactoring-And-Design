@@ -17,16 +17,15 @@ public class LongMethodTest
     public LongMethodTest()
     {
         this.optionsMock = new Mock<IOptions<LongMethodOptions>>();
+        _ = this.optionsMock.Setup(x => x.Value)
+                       .Returns(new LongMethodOptions { MethodLineCountThreshold = 15 });
         this.loggerMock = new Mock<ILogger<LongMethod>>();
         this.detector = new LongMethod(
             this.optionsMock.Object,
             this.loggerMock.Object);
-
-        _ = this.optionsMock.Setup(x => x.Value)
-                       .Returns(new LongMethodOptions { MethodLineCountThreshold = 9 });
     }
 
-    [Fact(Skip = "WIP")]
+    [Fact]
     public void Detect_LongMethodDetected_LogsWarning()
     {
         // Arrange
@@ -73,17 +72,17 @@ public class LongMethodTest
         var codeSmells = this.detector.Detect(fileContents);
 
         // Assert
-        /*this.loggerMock.Verify(
+        this.loggerMock.Verify(
             x => x.Log(
                 It.Is<LogLevel>(l => l == LogLevel.Warning),
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Long Method Detected from line 1 to 2.")),
+                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Long Method Detected from line 6 to 32.")),
                 It.IsAny<Exception?>(),
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
-            Times.Once);*/
-        Assert.Empty(codeSmells);
+            Times.Once);
+        Assert.NotEmpty(codeSmells);
         Assert.NotEmpty(codeSmells[0].Code);
-        Assert.Equal(9, codeSmells[0].StartLine);
+        Assert.Equal(6, codeSmells[0].StartLine);
     }
 
     [Fact]

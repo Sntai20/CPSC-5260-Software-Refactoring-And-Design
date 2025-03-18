@@ -28,11 +28,17 @@ internal class LongMethod(
 
         foreach (var line in fileContents.Split(Environment.NewLine))
         {
-            currentLineNumber++;
             var trimmedLine = RemoveComments(line.Trim());
+            if (string.IsNullOrWhiteSpace(trimmedLine))
+            {
+                continue;
+            }
+
+            currentLineNumber++;
+
             if (IsClassDeclaration(trimmedLine))
             {
-                inMethod = false;
+                continue;
             }
 
             if (IsMethodDeclaration(trimmedLine))
@@ -47,15 +53,12 @@ internal class LongMethod(
                 methodLineCount = 0;
                 methodStartLine = currentLineNumber;
                 braceCount = 0;
-            }
-
-            if (inMethod && !string.IsNullOrWhiteSpace(trimmedLine))
-            {
-                methodLineCount++;
+                continue;
             }
 
             if (inMethod)
             {
+                methodLineCount++;
                 braceCount += trimmedLine.Count(c => c == '{');
                 braceCount -= trimmedLine.Count(c => c == '}');
 
