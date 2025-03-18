@@ -46,6 +46,28 @@ internal class CodeSmellTestData
     public void LongMethod()
     {
         // long method
+        int n = 10;
+        for (int i = 0; i < n; i++)
+        {
+            if (i == 1)
+            {
+                Console.WriteLine($"{n}, ");
+            }
+        }
+
+        int t = 10;
+        for (int i = 0; i < t; i++)
+        {
+            if (i == 1)
+            {
+                Console.WriteLine($"{t}, ");
+            }
+        }
+    }
+
+    public void LongMethodCommentsOnly()
+    {
+        // long method
         // Line 1
         // Line 2
         // Line 3
