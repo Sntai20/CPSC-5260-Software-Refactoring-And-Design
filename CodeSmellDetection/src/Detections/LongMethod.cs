@@ -23,32 +23,19 @@ internal class LongMethod(
         int currentLineNumber = 0;
         int methodStartLine = 0;
         bool inMethod = false;
+        int braceCount = 0;
         var methodLineCountThreshold = this.options.Value.MethodLineCountThreshold;
 
         foreach (var line in fileContents.Split(Environment.NewLine))
         {
             currentLineNumber++;
             var trimmedLine = RemoveComments(line.Trim());
+            if (IsClassDeclaration(trimmedLine))
+            {
+                inMethod = false;
+            }
 
             if (IsMethodDeclaration(trimmedLine))
-            {
-                if (inMethod && methodLineCount >= methodLineCountThreshold)
-                {
-                    this.logger.LogInformation($"Long Method Detected from line {methodStartLine} to {currentLineNumber}.");
-                    codeSmells.Add(CreateCodeSmell(fileContents, methodStartLine, currentLineNumber));
-                }
-
-                inMethod = true;
-                methodLineCount = 0;
-                methodStartLine = currentLineNumber;
-            }
-
-            if (inMethod && !string.IsNullOrWhiteSpace(trimmedLine))
-            {
-                methodLineCount++;
-            }
-
-            if (trimmedLine == "}")
             {
                 if (inMethod && methodLineCount >= methodLineCountThreshold)
                 {
@@ -56,7 +43,32 @@ internal class LongMethod(
                     codeSmells.Add(CreateCodeSmell(fileContents, methodStartLine, currentLineNumber));
                 }
 
-                inMethod = false;
+                inMethod = true;
+                methodLineCount = 0;
+                methodStartLine = currentLineNumber;
+                braceCount = 0;
+            }
+
+            if (inMethod && !string.IsNullOrWhiteSpace(trimmedLine))
+            {
+                methodLineCount++;
+            }
+
+            if (inMethod)
+            {
+                braceCount += trimmedLine.Count(c => c == '{');
+                braceCount -= trimmedLine.Count(c => c == '}');
+
+                if (braceCount == 0)
+                {
+                    if (methodLineCount >= methodLineCountThreshold)
+                    {
+                        this.logger.LogWarning($"Long Method Detected from line {methodStartLine} to {currentLineNumber}.");
+                        codeSmells.Add(CreateCodeSmell(fileContents, methodStartLine, currentLineNumber));
+                    }
+
+                    inMethod = false;
+                }
             }
         }
 
@@ -68,19 +80,27 @@ internal class LongMethod(
         return codeSmells;
     }
 
-    private static bool IsMethodDeclaration(string line)
+    internal static bool IsClassDeclaration(string line)
     {
-        return line.StartsWith("public", StringComparison.Ordinal) ||
-               line.StartsWith("private", StringComparison.Ordinal) ||
-               line.StartsWith("protected", StringComparison.Ordinal) ||
-               line.StartsWith("internal", StringComparison.Ordinal);
+        return line.StartsWith("public class", StringComparison.Ordinal) ||
+               line.StartsWith("private class", StringComparison.Ordinal) ||
+               line.StartsWith("protected class", StringComparison.Ordinal) ||
+               line.StartsWith("internal class", StringComparison.Ordinal);
     }
 
-    private static CodeSmell CreateCodeSmell(string fileContents, int startLine, int endLine)
+    internal static bool IsMethodDeclaration(string line)
+    {
+        return (line.StartsWith("public", StringComparison.Ordinal) ||
+                line.StartsWith("private", StringComparison.Ordinal) ||
+                line.StartsWith("protected", StringComparison.Ordinal) ||
+                line.StartsWith("internal", StringComparison.Ordinal)) &&
+                line.Contains("(") && line.Contains(")");
+    }
+
+    internal static CodeSmell CreateCodeSmell(string fileContents, int startLine, int endLine)
     {
         return new CodeSmell
         {
-            // TODO: Improve the description.
             Type = CodeSmellType.LongMethod,
             Description = $"Long Method Detected from line {startLine} to {endLine}.",
             LineNumber = startLine,
@@ -90,7 +110,7 @@ internal class LongMethod(
         };
     }
 
-    private static string RemoveComments(string line)
+    internal static string RemoveComments(string line)
     {
         return Regex.Replace(line, @"//.*?$|/\*.*?\*/", string.Empty, RegexOptions.Singleline);
     }
