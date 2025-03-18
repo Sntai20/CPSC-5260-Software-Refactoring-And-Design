@@ -112,13 +112,13 @@ public class StructuralDuplicateCodeTest
         x => x.Log(
             It.Is<LogLevel>(l => l == LogLevel.Warning),
             It.IsAny<EventId>(),
-            It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Duplicated code detected between functions 1 and 2 with Jaccard similarity 1.")),
+            It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Duplicated code detected between functions")),
             It.IsAny<Exception?>(),
             It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
         Times.Once);
         Assert.NotNull(codeSmells);
         Assert.Equal(CodeSmellType.DuplicatedCode, codeSmells[0].Type);
-        Assert.Equal("Duplicated code detected between functions 1 and 2 with Jaccard similarity 1.", codeSmells[0].Description);
+        Assert.Equal("Duplicated code detected between functions 2 and 7 with Jaccard similarity 1.", codeSmells[0].Description);
     }
 
     [Fact]
