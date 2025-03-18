@@ -493,7 +493,7 @@ public class LongMethodTest
     }
 
     [Fact]
-    public void Detect_LongMethodDetected_EmptyMethod()
+    public void Detect_LongMethodNotDetected_EmptyMethod()
     {
         // Arrange
         string fileContents = @"
@@ -512,7 +512,7 @@ public class LongMethodTest
             x => x.Log(
                 It.Is<LogLevel>(l => l == LogLevel.Information),
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("No Long Methods Detected.")),
+                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Long Methods Not Detected.")),
                 It.IsAny<Exception?>(),
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
             Times.Once);
