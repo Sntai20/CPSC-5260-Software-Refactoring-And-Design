@@ -41,7 +41,7 @@ internal class LongMethod(
                 continue;
             }
 
-            if (IsMethodDeclaration(trimmedLine))
+            if (IsMethodDeclarationHelper.IsMethodDeclaration(trimmedLine))
             {
                 if (inMethod && methodLineCount >= methodLineCountThreshold)
                 {
@@ -89,16 +89,6 @@ internal class LongMethod(
                line.StartsWith("private class", StringComparison.Ordinal) ||
                line.StartsWith("protected class", StringComparison.Ordinal) ||
                line.StartsWith("internal class", StringComparison.Ordinal);
-    }
-
-    internal static bool IsMethodDeclaration(string line)
-    {
-        return (line.StartsWith("public", StringComparison.Ordinal) ||
-                line.StartsWith("private", StringComparison.Ordinal) ||
-                line.StartsWith("protected", StringComparison.Ordinal) ||
-                line.StartsWith("internal", StringComparison.Ordinal)) &&
-                line.Contains("(") && line.Contains(")") &&
-                !line.Contains("class");
     }
 
     internal static CodeSmell CreateCodeSmell(string fileContents, int startLine, int endLine)
