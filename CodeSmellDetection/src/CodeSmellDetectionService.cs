@@ -1,24 +1,43 @@
 namespace CodeSmellDetection;
 
+using Azure;
+using Azure.AI.Inference;
 using CodeSmellDetection.Detections;
 using CodeSmellDetection.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 /// <inheritdoc />
-internal class CodeSmellDetectionService(
-    StructuralDuplicateCode structuralDuplicateCodeDetection,
-    LongMethod longMethodDetection,
-    LongParameterList longParameterListDetection,
-    ILogger<CodeSmellDetectionService> logger,
-    IConfiguration configuration)
+internal class CodeSmellDetectionService
     : ICodeSmellDetectionService
 {
-    private readonly StructuralDuplicateCode structuralDuplicateCodeDetection = structuralDuplicateCodeDetection;
-    private readonly LongMethod longMethodDetection = longMethodDetection;
-    private readonly LongParameterList longParameterListDetection = longParameterListDetection;
-    private readonly ILogger<CodeSmellDetectionService> logger = logger;
-    private readonly IConfiguration configuration = configuration;
+    private readonly StructuralDuplicateCode structuralDuplicateCodeDetection;
+    private readonly LongMethod longMethodDetection;
+    private readonly LongParameterList longParameterListDetection;
+    private readonly ILogger<CodeSmellDetectionService> logger;
+    private readonly IConfiguration configuration;
+    private readonly ChatCompletionsClient chatClient;
+
+    public CodeSmellDetectionService(
+        StructuralDuplicateCode structuralDuplicateCodeDetection,
+        LongMethod longMethodDetection,
+        LongParameterList longParameterListDetection,
+        ILogger<CodeSmellDetectionService> logger,
+        IConfiguration configuration)
+    {
+        this.structuralDuplicateCodeDetection = structuralDuplicateCodeDetection;
+        this.longMethodDetection = longMethodDetection;
+        this.longParameterListDetection = longParameterListDetection;
+        this.logger = logger;
+        this.configuration = configuration;
+
+        var endpoint = this.configuration["AzureOpenAI:Endpoint"]
+               ?? throw new InvalidOperationException("Missing configuration: AzureOpenAI:Endpoint. See the README for details.");
+        var key = this.configuration["AzureOpenAI:Key"]
+                       ?? throw new InvalidOperationException("Missing configuration: AzureOpenAI:Key. See the README for details.");
+
+        this.chatClient = new(new Uri(endpoint), new AzureKeyCredential(key));
+    }
 
     /// <inheritdoc />
     public async Task<List<CodeSmell>> DetectAsync()
@@ -56,9 +75,33 @@ internal class CodeSmellDetectionService(
     }
 
     /// <inheritdoc />
-    public Task<CodeSmell> RefactorAsync(CodeSmell codeSmell)
+    public Task<CodeSmell> RefactorAsync()
     {
-        // TODO: Implement the refactoring logic here to call a service to get the refactored code.
-        throw new NotImplementedException();
+        return this.RefactorAsync(new CodeSmell
+        {
+            Code = "Console.WriteLine(\"Hello, World!\");",
+            SmellCodeRecommendation = "Console.WriteLine(\"Hello, World!\");",
+        });
+    }
+
+    public async Task<CodeSmell> RefactorAsync(CodeSmell codeSmell)
+    {
+        var requestOptions = new ChatCompletionsOptions()
+        {
+            Messages =
+            {
+                new ChatRequestSystemMessage("You are a helpful assistant."),
+                new ChatRequestUserMessage("How many feet are in a mile?"),
+            },
+            Model = "gpt-4o-mini",
+        };
+
+        Response<ChatCompletions> response = await this.chatClient.CompleteAsync(requestOptions);
+        Console.WriteLine(response.Value.Content);
+        return new CodeSmell
+        {
+            Code = codeSmell.Code,
+            SmellCodeRecommendation = response.Value.Content,
+        };
     }
 }

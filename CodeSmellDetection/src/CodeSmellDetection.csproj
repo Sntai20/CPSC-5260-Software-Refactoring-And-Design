@@ -5,10 +5,13 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <UserSecretsId>1b6df5f5-d98f-4167-875e-d0c979a299e7</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.AI.Inference" />
     <PackageReference Include="Microsoft.CodeAnalysis" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
   </ItemGroup>
 
   <!-- Allow the associated Test project to test internals -->
