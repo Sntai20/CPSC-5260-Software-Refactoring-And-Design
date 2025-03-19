@@ -24,10 +24,10 @@ public class PDFDirectorySource(string sourceDirectory) : IIngestionSource
             var sourceFileId = SourceFileId(sourceFile);
             var sourceFileVersion = File.GetLastWriteTimeUtc(sourceFile).ToString("o");
 
-            var existingDocument = await existingDocuments.Where(d => d.SourceId == SourceId && d.Id == sourceFileId).FirstOrDefaultAsync();
+            var existingDocument = await existingDocuments.Where(d => d.SourceId == this.SourceId && d.Id == sourceFileId).FirstOrDefaultAsync();
             if (existingDocument is null)
             {
-                results.Add(new() { Id = sourceFileId, Version = sourceFileVersion, SourceId = SourceId });
+                results.Add(new() { Id = sourceFileId, Version = sourceFileVersion, SourceId = this.SourceId });
             }
             else if (existingDocument.Version != sourceFileVersion)
             {
