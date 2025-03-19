@@ -17,7 +17,8 @@ using Microsoft.Extensions.VectorData;
 /// </summary>
 public class JsonVectorStore(string basePath) : IVectorStore
 {
-    public IVectorStoreRecordCollection<TKey, TRecord> GetCollection<TKey, TRecord>(string name, VectorStoreRecordDefinition? vectorStoreRecordDefinition = null) where TKey : notnull
+    public IVectorStoreRecordCollection<TKey, TRecord> GetCollection<TKey, TRecord>(string name, VectorStoreRecordDefinition? vectorStoreRecordDefinition = null)
+        where TKey : notnull
         => new JsonVectorStoreRecordCollection<TKey, TRecord>(name, Path.Combine(basePath, name + ".json"), vectorStoreRecordDefinition);
 
     public IAsyncEnumerable<string> ListCollectionNamesAsync(CancellationToken cancellationToken = default)
@@ -26,16 +27,16 @@ public class JsonVectorStore(string basePath) : IVectorStore
     private sealed class JsonVectorStoreRecordCollection<TKey, TRecord> : IVectorStoreRecordCollection<TKey, TRecord>
         where TKey : notnull
     {
-        private static readonly Func<TRecord, TKey> getKey = CreateKeyReader();
-        private static readonly Func<TRecord, ReadOnlyMemory<float>> getVector = CreateVectorReader();
-
-        private readonly string name;
+        private static readonly Func<TRecord, TKey> GetKey = CreateKeyReader();
+        private static readonly Func<TRecord, ReadOnlyMemory<float>> GetVector = CreateVectorReader();
         private readonly string filePath;
         private Dictionary<TKey, TRecord>? records;
 
+#pragma warning disable IDE0060 // Remove unused parameter
         public JsonVectorStoreRecordCollection(string name, string filePath, VectorStoreRecordDefinition? vectorStoreRecordDefinition)
+#pragma warning restore IDE0060 // Remove unused parameter
         {
-            this.name = name;
+            this.CollectionName = name;
             this.filePath = filePath;
 
             if (File.Exists(filePath))
@@ -44,7 +45,7 @@ public class JsonVectorStore(string basePath) : IVectorStore
             }
         }
 
-        public string CollectionName => this.name;
+        public string CollectionName { get; }
 
         public Task<bool> CollectionExistsAsync(CancellationToken cancellationToken = default)
             => Task.FromResult(this.records is not null);
@@ -94,7 +95,7 @@ public class JsonVectorStore(string basePath) : IVectorStore
 
         public async Task<TKey> UpsertAsync(TRecord record, UpsertRecordOptions? options = null, CancellationToken cancellationToken = default)
         {
-            var key = getKey(record);
+            var key = GetKey(record);
             this.records![key] = record;
             await this.WriteToDiskAsync(cancellationToken);
             return key;
@@ -105,7 +106,7 @@ public class JsonVectorStore(string basePath) : IVectorStore
             var results = new List<TKey>();
             foreach (var record in records)
             {
-                var key = getKey(record);
+                var key = GetKey(record);
                 this.records![key] = record;
                 results.Add(key);
             }
@@ -141,7 +142,7 @@ public class JsonVectorStore(string basePath) : IVectorStore
             }
 
             var ranked = (from record in filteredRecords
-                          let candidateVector = getVector(record)
+                          let candidateVector = GetVector(record)
                           let similarity = TensorPrimitives.CosineSimilarity(candidateVector.Span, floatVector.Span)
                           orderby similarity descending
                           select (Record: record, Similarity: similarity));
