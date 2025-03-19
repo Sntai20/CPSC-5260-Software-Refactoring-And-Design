@@ -1,0 +1,23 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+  </Configurations>
+  <Project Path="AppHost/src/AppHost.csproj">
+    <Platform Project="x64" />
+  </Project>
+  <Project Path="CodeSmellDetection/src/CodeSmellDetection.csproj">
+    <Platform Project="x64" />
+  </Project>
+  <Project Path="CodeSmellDetection/test/CodeSmellDetectionTest.csproj">
+    <Platform Project="x64" />
+  </Project>
+  <Project Path="Lecture/src/Lecture.csproj">
+    <Platform Project="x64" />
+  </Project>
+  <Project Path="ServiceDefaults/src/ServiceDefaults.csproj">
+    <Platform Project="x64" />
+  </Project>
+  <Project Path="UserInterface/src/UserInterface.csproj">
+    <Platform Project="x64" />
+  </Project>
+</Solution>
