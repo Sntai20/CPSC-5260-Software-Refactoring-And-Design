@@ -31,12 +31,10 @@ internal class CodeSmellDetectionService
         this.logger = logger;
         this.configuration = configuration;
 
-        var endpoint = this.configuration["AzureOpenAI:Endpoint"]
-               ?? throw new InvalidOperationException("Missing configuration: AzureOpenAI:Endpoint. See the README for details.");
-        var key = this.configuration["AzureOpenAI:Key"]
-                       ?? throw new InvalidOperationException("Missing configuration: AzureOpenAI:Key. See the README for details.");
+        var endpoint = this.configuration["AzureOpenAI:Endpoint"];
+        var key = this.configuration["AzureOpenAI:Key"];
 
-        this.chatClient = new(new Uri(endpoint), new AzureKeyCredential(key));
+        /*this.chatClient = new(new Uri(endpoint), new AzureKeyCredential(key));*/
     }
 
     /// <inheritdoc />

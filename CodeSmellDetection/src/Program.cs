@@ -1,4 +1,5 @@
 ﻿using CodeSmellDetection;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ServiceDefaults;
@@ -6,6 +7,7 @@ using ServiceDefaults;
 var hostApplicationBuilder = Host.CreateApplicationBuilder(args)
     .AddServiceDefaults();
 
+hostApplicationBuilder.Configuration.AddUserSecrets<Program>();
 hostApplicationBuilder.Services.AddCodeSmellDetectionService();
 
 IHost? host = hostApplicationBuilder.Build();
