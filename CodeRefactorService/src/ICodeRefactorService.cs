@@ -1,4 +1,6 @@
-﻿using CodeSmellDetection.Models;
+﻿namespace CodeRefactorService;
+
+using CodeSmellDetection.Models;
 
 internal interface ICodeRefactorService
 {

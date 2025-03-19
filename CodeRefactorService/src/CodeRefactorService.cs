@@ -1,4 +1,4 @@
-﻿namespace ConsoleApp1;
+﻿namespace CodeRefactorService;
 
 using System;
 using System.Threading.Tasks;
@@ -7,7 +7,7 @@ using Azure.AI.Inference;
 using CodeSmellDetection.Models;
 using Microsoft.Extensions.Configuration;
 
-internal class CodeRefactorService : ICodeRefactorService
+internal sealed class CodeRefactorService : ICodeRefactorService
 {
     private readonly IConfiguration configuration;
     private readonly ChatCompletionsClient chatClient;
