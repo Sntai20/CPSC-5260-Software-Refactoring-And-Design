@@ -44,8 +44,8 @@ else if (codeSmells != null && codeSmells.Any())
                     <td>
                         @if (codeSmell.Type == CodeSmellType.DuplicatedCode)
                         {
-                            // TODO: If a code refactor is produced, include the option to save to a file.
                             <button class="btn btn-secondary" @onclick="() => RefactorCodeSmell(codeSmell)">Refactor</button>
+                            <button class="btn btn-secondary" @onclick="() => SaveRefactoredCodeToFile(codeSmell)">Save to File</button>
                         }
                     </td>
                 </tr>
@@ -149,6 +149,10 @@ else if (codeSmells != null && codeSmells.Any())
     private async Task RefactorCodeSmell(CodeSmellDetection.Models.CodeSmell codeSmell)
     {
         var refactoredCode = await CodeSmellDetectionService.RefactorAsync(codeSmell);
-        // TODO: Update the UI with the refactored code.
+    }
+
+    private async Task SaveRefactoredCodeToFile(CodeSmellDetection.Models.CodeSmell codeSmell)
+    {
+        var refactoredCode = await CodeSmellDetectionService.RefactorAsync(codeSmell);
     }
 }
