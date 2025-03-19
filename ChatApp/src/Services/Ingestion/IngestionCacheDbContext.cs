@@ -7,7 +7,8 @@ using Microsoft.EntityFrameworkCore;
 // and to delete documents that have been removed from the underlying source.
 public class IngestionCacheDbContext : DbContext
 {
-    public IngestionCacheDbContext(DbContextOptions<IngestionCacheDbContext> options) : base(options)
+    public IngestionCacheDbContext(DbContextOptions<IngestionCacheDbContext> options)
+        : base(options)
     {
     }
 

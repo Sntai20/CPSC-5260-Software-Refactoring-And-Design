@@ -33,6 +33,7 @@ public class DataIngestor(
             await vectorCollection.DeleteBatchAsync(deletedFile.Records.Select(r => r.Id));
             _ = ingestionCacheDb.Documents.Remove(deletedFile);
         }
+
         _ = await ingestionCacheDb.SaveChangesAsync();
 
         var modifiedDocs = await source.GetNewOrModifiedDocumentsAsync(documentsForSource);
@@ -46,7 +47,9 @@ public class DataIngestor(
             }
 
             var newRecords = await source.CreateRecordsForDocumentAsync(embeddingGenerator, modifiedDoc.Id);
-            await foreach (var id in vectorCollection.UpsertBatchAsync(newRecords)) { }
+            await foreach (var id in vectorCollection.UpsertBatchAsync(newRecords))
+            {
+            }
 
             modifiedDoc.Records.Clear();
             modifiedDoc.Records.AddRange(newRecords.Select(r => new IngestedRecord { Id = r.Key, DocumentId = modifiedDoc.Id }));

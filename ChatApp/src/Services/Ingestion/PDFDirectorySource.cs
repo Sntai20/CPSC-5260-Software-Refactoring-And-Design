@@ -70,7 +70,8 @@ public class PDFDirectorySource(string sourceDirectory) : IIngestionSource
         var letters = pdfPage.Letters;
         var words = NearestNeighbourWordExtractor.Instance.GetWords(letters);
         var textBlocks = DocstrumBoundingBoxes.Instance.GetBlocks(words);
-        var pageText = string.Join(Environment.NewLine + Environment.NewLine,
+        var pageText = string.Join(
+            Environment.NewLine + Environment.NewLine,
             textBlocks.Select(t => t.Text.ReplaceLineEndings(" ")));
 
 #pragma warning disable SKEXP0050 // Type is for evaluation purposes only
