@@ -11,7 +11,7 @@ using Microsoft.Extensions.VectorData;
 /// In production, you must replace this with a real vector store. There are many IVectorStore
 /// implementations available, including ones for standalone vector databases like Qdrant or Milvus,
 /// or for integrating with relational databases such as SQL Server or PostgreSQL.
-/// 
+///
 /// This implementation stores the vector records in large JSON files on disk. It is very inefficient
 /// and is provided only for convenience when prototyping.
 /// </summary>
@@ -23,7 +23,7 @@ public class JsonVectorStore(string basePath) : IVectorStore
     public IAsyncEnumerable<string> ListCollectionNamesAsync(CancellationToken cancellationToken = default)
         => Directory.EnumerateFiles(basePath, "*.json").ToAsyncEnumerable();
 
-    private class JsonVectorStoreRecordCollection<TKey, TRecord> : IVectorStoreRecordCollection<TKey, TRecord>
+    private sealed class JsonVectorStoreRecordCollection<TKey, TRecord> : IVectorStoreRecordCollection<TKey, TRecord>
         where TKey : notnull
     {
         private static readonly Func<TRecord, TKey> _getKey = CreateKeyReader();
