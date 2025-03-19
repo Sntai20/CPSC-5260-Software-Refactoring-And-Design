@@ -15,16 +15,30 @@ builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 // You will need to set the endpoint and key to your own values
 // You can do this using Visual Studio's "Manage User Secrets" UI, or on the command line:
 //   cd this-project-directory
-//   dotnet user-secrets set AzureOpenAI:Endpoint https://YOUR-DEPLOYMENT-NAME.openai.azure.com
+//   dotnet user-secrets set AzureOpenAI:Endpoint https://YOUR-DEPLOYMENT-NAME.openai.azure.
+var endpoint = builder.Configuration["AzureOpenAI:Endpoint"]
+               ?? throw new InvalidOperationException("Missing configuration: AzureOpenAI:Endpoint. See the README for details.");
+var key = builder.Configuration["AzureOpenAI:Key"]
+               ?? throw new InvalidOperationException("Missing configuration: AzureOpenAI:Key. See the README for details.");
+
+var azureOpenAiKey = new AzureOpenAIClient(new Uri(endpoint), new AzureKeyCredential(key));
+
+var chatClientKey = azureOpenAiKey.AsChatClient("gpt-4o-mini");
+var embeddingGeneratorKey = azureOpenAiKey.AsEmbeddingGenerator("text-embedding-3-small");
+builder.Services.AddChatClient(chatClientKey).UseFunctionInvocation().UseLogging();
+builder.Services.AddEmbeddingGenerator(embeddingGeneratorKey);
+
 var credentialOptions = new DefaultAzureCredentialOptions
 {
     TenantId = builder.Configuration["AzureOpenAI:TenantId"]
                ?? throw new InvalidOperationException("Missing configuration: AzureOpenAI:TenantId. See the README for details."),
+    ManagedIdentityClientId = builder.Configuration["AzureOpenAI:ClientId"],
 };
 
 var azureOpenAi = new AzureOpenAIClient(
     new Uri(builder.Configuration["AzureOpenAI:Endpoint"] ?? throw new InvalidOperationException("Missing configuration: AzureOpenAI:Endpoint. See the README for details.")),
     new DefaultAzureCredential(credentialOptions));
+
 var chatClient = azureOpenAi.AsChatClient("gpt-4o-mini");
 var embeddingGenerator = azureOpenAi.AsEmbeddingGenerator("text-embedding-3-small");
 
