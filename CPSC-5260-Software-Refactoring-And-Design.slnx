@@ -14,6 +14,9 @@
   <Project Path="CodeSmellDetection/test/CodeSmellDetectionTest.csproj">
     <Platform Project="x64" />
   </Project>
+  <Project Path="CodeRefactorService/src/CodeRefactorService.csproj" Id="e8d91490-5416-4965-851f-2ec14407b9a4">
+    <Platform Project="x64" />
+  </Project>
   <Project Path="Lecture/src/Lecture.csproj">
     <Platform Project="x64" />
   </Project>
