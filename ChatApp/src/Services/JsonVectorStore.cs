@@ -26,38 +26,38 @@ public class JsonVectorStore(string basePath) : IVectorStore
     private sealed class JsonVectorStoreRecordCollection<TKey, TRecord> : IVectorStoreRecordCollection<TKey, TRecord>
         where TKey : notnull
     {
-        private static readonly Func<TRecord, TKey> _getKey = CreateKeyReader();
-        private static readonly Func<TRecord, ReadOnlyMemory<float>> _getVector = CreateVectorReader();
+        private static readonly Func<TRecord, TKey> getKey = CreateKeyReader();
+        private static readonly Func<TRecord, ReadOnlyMemory<float>> getVector = CreateVectorReader();
 
-        private readonly string _name;
-        private readonly string _filePath;
-        private Dictionary<TKey, TRecord>? _records;
+        private readonly string name;
+        private readonly string filePath;
+        private Dictionary<TKey, TRecord>? records;
 
         public JsonVectorStoreRecordCollection(string name, string filePath, VectorStoreRecordDefinition? vectorStoreRecordDefinition)
         {
-            this._name = name;
-            this._filePath = filePath;
+            this.name = name;
+            this.filePath = filePath;
 
             if (File.Exists(filePath))
             {
-                this._records = JsonSerializer.Deserialize<Dictionary<TKey, TRecord>>(File.ReadAllText(filePath));
+                this.records = JsonSerializer.Deserialize<Dictionary<TKey, TRecord>>(File.ReadAllText(filePath));
             }
         }
 
-        public string CollectionName => this._name;
+        public string CollectionName => this.name;
 
         public Task<bool> CollectionExistsAsync(CancellationToken cancellationToken = default)
-            => Task.FromResult(this._records is not null);
+            => Task.FromResult(this.records is not null);
 
         public async Task CreateCollectionAsync(CancellationToken cancellationToken = default)
         {
-            this._records = [];
+            this.records = [];
             await this.WriteToDiskAsync(cancellationToken);
         }
 
         public async Task CreateCollectionIfNotExistsAsync(CancellationToken cancellationToken = default)
         {
-            if (this._records is null)
+            if (this.records is null)
             {
                 await this.CreateCollectionAsync(cancellationToken);
             }
@@ -65,7 +65,7 @@ public class JsonVectorStore(string basePath) : IVectorStore
 
         public Task DeleteAsync(TKey key, DeleteRecordOptions? options = null, CancellationToken cancellationToken = default)
         {
-            _ = this._records!.Remove(key);
+            _ = this.records!.Remove(key);
             return this.WriteToDiskAsync(cancellationToken);
         }
 
@@ -73,7 +73,7 @@ public class JsonVectorStore(string basePath) : IVectorStore
         {
             foreach (var key in keys)
             {
-                _ = this._records!.Remove(key);
+                _ = this.records!.Remove(key);
             }
 
             return this.WriteToDiskAsync(cancellationToken);
@@ -81,21 +81,21 @@ public class JsonVectorStore(string basePath) : IVectorStore
 
         public Task DeleteCollectionAsync(CancellationToken cancellationToken = default)
         {
-            this._records = null;
-            File.Delete(this._filePath);
+            this.records = null;
+            File.Delete(this.filePath);
             return Task.CompletedTask;
         }
 
         public Task<TRecord?> GetAsync(TKey key, GetRecordOptions? options = null, CancellationToken cancellationToken = default)
-            => Task.FromResult(this._records!.GetValueOrDefault(key));
+            => Task.FromResult(this.records!.GetValueOrDefault(key));
 
         public IAsyncEnumerable<TRecord> GetBatchAsync(IEnumerable<TKey> keys, GetRecordOptions? options = null, CancellationToken cancellationToken = default)
-            => keys.Select(key => this._records!.GetValueOrDefault(key)!).Where(r => r is not null).ToAsyncEnumerable();
+            => keys.Select(key => this.records!.GetValueOrDefault(key)!).Where(r => r is not null).ToAsyncEnumerable();
 
         public async Task<TKey> UpsertAsync(TRecord record, UpsertRecordOptions? options = null, CancellationToken cancellationToken = default)
         {
-            var key = _getKey(record);
-            this._records![key] = record;
+            var key = getKey(record);
+            this.records![key] = record;
             await this.WriteToDiskAsync(cancellationToken);
             return key;
         }
@@ -105,8 +105,8 @@ public class JsonVectorStore(string basePath) : IVectorStore
             var results = new List<TKey>();
             foreach (var record in records)
             {
-                var key = _getKey(record);
-                this._records![key] = record;
+                var key = getKey(record);
+                this.records![key] = record;
                 results.Add(key);
             }
 
@@ -125,7 +125,7 @@ public class JsonVectorStore(string basePath) : IVectorStore
                 throw new NotSupportedException($"The provided vector type {vector!.GetType().FullName} is not supported.");
             }
 
-            IEnumerable<TRecord> filteredRecords = this._records!.Values;
+            IEnumerable<TRecord> filteredRecords = this.records!.Values;
 
             foreach (var clause in options?.Filter?.FilterClauses ?? [])
             {
@@ -141,7 +141,7 @@ public class JsonVectorStore(string basePath) : IVectorStore
             }
 
             var ranked = (from record in filteredRecords
-                          let candidateVector = _getVector(record)
+                          let candidateVector = getVector(record)
                           let similarity = TensorPrimitives.CosineSimilarity(candidateVector.Span, floatVector.Span)
                           orderby similarity descending
                           select (Record: record, Similarity: similarity));
@@ -171,9 +171,9 @@ public class JsonVectorStore(string basePath) : IVectorStore
 
         private async Task WriteToDiskAsync(CancellationToken cancellationToken = default)
         {
-            var json = JsonSerializer.Serialize(this._records);
-            _ = Directory.CreateDirectory(Path.GetDirectoryName(this._filePath)!);
-            await File.WriteAllTextAsync(this._filePath, json, cancellationToken);
+            var json = JsonSerializer.Serialize(this.records);
+            _ = Directory.CreateDirectory(Path.GetDirectoryName(this.filePath)!);
+            await File.WriteAllTextAsync(this.filePath, json, cancellationToken);
         }
     }
 }
