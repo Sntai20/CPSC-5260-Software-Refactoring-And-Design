@@ -18,13 +18,13 @@ public class IngestionCacheDbContext : DbContext
     {
         using var scope = services.CreateScope();
         using var db = scope.ServiceProvider.GetRequiredService<IngestionCacheDbContext>();
-        db.Database.EnsureCreated();
+        _ = db.Database.EnsureCreated();
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        modelBuilder.Entity<IngestedDocument>().HasMany(d => d.Records).WithOne().HasForeignKey(r => r.DocumentId).OnDelete(DeleteBehavior.Cascade);
+        _ = modelBuilder.Entity<IngestedDocument>().HasMany(d => d.Records).WithOne().HasForeignKey(r => r.DocumentId).OnDelete(DeleteBehavior.Cascade);
     }
 }
 

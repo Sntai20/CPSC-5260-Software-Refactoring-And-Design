@@ -31,9 +31,9 @@ public class DataIngestor(
         {
             logger.LogInformation("Removing ingested data for {file}", deletedFile.Id);
             await vectorCollection.DeleteBatchAsync(deletedFile.Records.Select(r => r.Id));
-            ingestionCacheDb.Documents.Remove(deletedFile);
+            _ = ingestionCacheDb.Documents.Remove(deletedFile);
         }
-        await ingestionCacheDb.SaveChangesAsync();
+        _ = await ingestionCacheDb.SaveChangesAsync();
 
         var modifiedDocs = await source.GetNewOrModifiedDocumentsAsync(documentsForSource);
         foreach (var modifiedDoc in modifiedDocs)
@@ -53,11 +53,11 @@ public class DataIngestor(
 
             if (ingestionCacheDb.Entry(modifiedDoc).State == EntityState.Detached)
             {
-                ingestionCacheDb.Documents.Add(modifiedDoc);
+                _ = ingestionCacheDb.Documents.Add(modifiedDoc);
             }
         }
 
-        await ingestionCacheDb.SaveChangesAsync();
+        _ = await ingestionCacheDb.SaveChangesAsync();
         logger.LogInformation("Ingestion is up-to-date");
     }
 }

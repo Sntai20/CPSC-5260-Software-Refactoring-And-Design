@@ -65,7 +65,7 @@ public class JsonVectorStore(string basePath) : IVectorStore
 
         public Task DeleteAsync(TKey key, DeleteRecordOptions? options = null, CancellationToken cancellationToken = default)
         {
-            _records!.Remove(key);
+            _ = _records!.Remove(key);
             return WriteToDiskAsync(cancellationToken);
         }
 
@@ -73,7 +73,7 @@ public class JsonVectorStore(string basePath) : IVectorStore
         {
             foreach (var key in keys)
             {
-                _records!.Remove(key);
+                _ = _records!.Remove(key);
             }
 
             return WriteToDiskAsync(cancellationToken);
@@ -172,7 +172,7 @@ public class JsonVectorStore(string basePath) : IVectorStore
         private async Task WriteToDiskAsync(CancellationToken cancellationToken = default)
         {
             var json = JsonSerializer.Serialize(_records);
-            Directory.CreateDirectory(Path.GetDirectoryName(_filePath)!);
+            _ = Directory.CreateDirectory(Path.GetDirectoryName(_filePath)!);
             await File.WriteAllTextAsync(_filePath, json, cancellationToken);
         }
     }
