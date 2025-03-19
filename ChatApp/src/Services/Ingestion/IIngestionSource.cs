@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.AI;
+﻿namespace ChatApp.Services.Ingestion;
 
-namespace ChatApp.Services.Ingestion;
+using Microsoft.Extensions.AI;
 
 public interface IIngestionSource
 {

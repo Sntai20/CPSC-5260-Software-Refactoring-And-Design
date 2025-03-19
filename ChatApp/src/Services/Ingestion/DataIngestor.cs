@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿namespace ChatApp.Services.Ingestion;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.VectorData;
-
-namespace ChatApp.Services.Ingestion;
 
 public class DataIngestor(
     ILogger<DataIngestor> logger,

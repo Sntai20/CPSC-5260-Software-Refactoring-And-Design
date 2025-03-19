@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.VectorData;
+﻿namespace ChatApp.Services;
 
-namespace ChatApp.Services;
+using Microsoft.Extensions.VectorData;
 
 public class SemanticSearchRecord
 {

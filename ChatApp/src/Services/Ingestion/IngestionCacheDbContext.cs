@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿namespace ChatApp.Services.Ingestion;
 
-namespace ChatApp.Services.Ingestion;
+using Microsoft.EntityFrameworkCore;
 
 // A DbContext that keeps track of which documents have been ingested.
 // This makes it possible to avoid re-ingesting documents that have not changed,

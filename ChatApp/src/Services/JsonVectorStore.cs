@@ -1,10 +1,10 @@
-﻿using Microsoft.Extensions.VectorData;
+﻿namespace ChatApp.Services;
+
 using System.Numerics.Tensors;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
-
-namespace ChatApp.Services;
+using Microsoft.Extensions.VectorData;
 
 /// <summary>
 /// This IVectorStore implementation is for prototyping only. Do not use this in production.
