@@ -106,3 +106,15 @@ dotnet_diagnostic.SA1414.severity = none
 
 # SA1508: Closing braces should not be preceded by blank line
 dotnet_diagnostic.SA1508.severity = none
+
+# SA1206: Declaration keywords should follow order
+dotnet_diagnostic.SA1206.severity = none
+
+# SA1402: File may only contain a single type
+dotnet_diagnostic.SA1402.severity = none
+
+# SA1201: Elements should appear in the correct order
+dotnet_diagnostic.SA1201.severity = none
+
+# CA2227: Collection properties should be read only
+dotnet_diagnostic.CA2227.severity = none
