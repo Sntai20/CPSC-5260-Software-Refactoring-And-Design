@@ -5,6 +5,9 @@
   <Project Path="AppHost/src/AppHost.csproj">
     <Platform Project="x64" />
   </Project>
+  <Project Path="ChatApp/src/ChatApp.csproj">
+    <Platform Project="x64" />
+  </Project>
   <Project Path="CodeSmellDetection/src/CodeSmellDetection.csproj">
     <Platform Project="x64" />
   </Project>
